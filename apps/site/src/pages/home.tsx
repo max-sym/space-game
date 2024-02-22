@@ -1,11 +1,22 @@
 import { Game } from "@space-game/game"
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 
 export const Home = () => {
+  const canvas = useRef<HTMLCanvasElement>(null)
+
   useEffect(() => {
-    const game = new Game()
-    console.log(game.foo)
+    new Game({
+      canvas: canvas.current as HTMLCanvasElement,
+    })
   }, [])
 
-  return <div>Heloo World</div>
+  return (
+    <div>
+      <canvas
+        ref={canvas}
+        touch-action="none"
+        className="w-full h-full block"
+      />
+    </div>
+  )
 }

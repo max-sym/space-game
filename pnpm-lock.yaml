@@ -9,7 +9,14 @@ importers:
   .: {}
 
   apps/game:
+    dependencies:
+      '@babylonjs/core':
+        specifier: ^6.44.0
+        version: 6.44.0
     devDependencies:
+      '@babylonjs/materials':
+        specifier: ^6.44.0
+        version: 6.44.0(@babylonjs/core@6.44.0)
       typescript:
         specifier: ^5.3.3
         version: 5.3.3
@@ -133,6 +140,17 @@ packages:
     dependencies:
       regenerator-runtime: 0.14.1
     dev: false
+
+  /@babylonjs/core@6.44.0:
+    resolution: {integrity: sha512-wSLNutd8qADzPJaKSe2JGN0CGG+bPaayttZIIv9U/ziTnw9EL9KmtU4u26CJMtuV5X8zVvVxih+wNipkHpzgug==}
+
+  /@babylonjs/materials@6.44.0(@babylonjs/core@6.44.0):
+    resolution: {integrity: sha512-7EE+qf7LS6ppYLym0DFNbBoqL6rfZQXz2qRCG3WU5GW2r+5ltD2tI5RYKm+nBaLfRDfwR+8MqcCPOwCy5ig3/A==}
+    peerDependencies:
+      '@babylonjs/core': ^6.0.0
+    dependencies:
+      '@babylonjs/core': 6.44.0
+    dev: true
 
   /@esbuild/aix-ppc64@0.19.12:
     resolution: {integrity: sha512-bmoCYyWdEL3wDQIVbcyzRyeKLgk2WtWLTWz1ZIAZF/EGbNOwSA6ew3PftJ1PqMiOOGu0OyFMzG53L0zqIpPeNA==}

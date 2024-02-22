@@ -7,8 +7,11 @@
   "author": "",
   "license": "UNLICENSED",
   "type": "module",
-  "dependencies": {},
+  "dependencies": {
+    "@babylonjs/core": "^6.44.0"
+  },
   "devDependencies": {
+    "@babylonjs/materials": "^6.44.0",
     "typescript": "^5.3.3"
   }
 }
