@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Oxanium:wght@400;800&display=swap");
+
+html {
+  @apply h-full w-full;
+
+  body {
+    @apply h-full w-full tracking-wider antialiased transition motion-safe:scroll-smooth font-body;
+  }
+
+  &.dark {
+    body {
+      @apply bg-slate-950 text-slate-50;
+    }
+  }
+}
+
+hr {
+  @apply my-4 border-slate-200 dark:border-slate-700;
+}
+
+img {
+  @apply select-none;
+  -webkit-user-drag: none;
+}
+
+p {
+  @apply text-slate-700 dark:text-slate-200;
+}
+
+/**
+ * Making the drawer faster on open & close.
+ */
+[vaul-drawer] {
+  transition: transform 0.12s ease-out !important;
+}
+
+.flatpickr-calendar.open {
+  @apply pointer-events-auto;
+}
