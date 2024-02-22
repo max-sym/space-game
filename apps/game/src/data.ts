@@ -8,9 +8,17 @@ export type PlanetConfig = {
 
 export type GameConfig = {
   planets: PlanetConfig[]
+  camera: {
+    position: B.Vector3
+    target: B.Vector3
+  }
 }
 
 export const data: GameConfig = {
+  camera: {
+    position: new B.Vector3(0, 5, -10),
+    target: B.Vector3.Zero(),
+  },
   planets: [
     {
       name: "earth",
