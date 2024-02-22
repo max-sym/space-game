@@ -1,9 +1,17 @@
 import { B } from "~/b"
 
+export type ContinentConfig = {
+  name: string
+  position: B.Vector2
+  size: number
+}
+
 export type PlanetConfig = {
   name: string
   diameter: number
   position: B.Vector3
+  continents: ContinentConfig[]
+  color: string
 }
 
 export type GameConfig = {
@@ -23,12 +31,22 @@ export const data: GameConfig = {
     {
       name: "earth",
       diameter: 1,
-      position: new B.Vector3(0, 0, 0),
+      position: new B.Vector3(7, 0, 0),
+      continents: [
+        {
+          name: "blandia",
+          position: new B.Vector2(0, 0),
+          size: 0.5,
+        },
+      ],
+      color: "#004477",
     },
     {
       name: "mars",
       diameter: 1,
-      position: new B.Vector3(3, 0, 0),
+      position: new B.Vector3(10, 0, 0),
+      continents: [],
+      color: "#331100",
     },
   ],
 }

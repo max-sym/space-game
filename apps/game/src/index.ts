@@ -1,6 +1,6 @@
 import { B } from "~/b"
 import { GameConfig, data } from "~/data"
-import { Planet } from "./planet"
+import { Planet, Unit } from "./planet"
 
 export class Game {
   canvas: HTMLCanvasElement
@@ -8,10 +8,11 @@ export class Game {
   camera: B.FreeCamera
   config: GameConfig = data
   engine: B.Engine
+  units: Unit[] = []
 
   constructor({ canvas }: { canvas: HTMLCanvasElement }) {
     this.canvas = canvas
-    this.engine = new B.Engine(canvas)
+    this.engine = new B.Engine(canvas, false)
     this.scene = new B.Scene(this.engine)
 
     this.init()
@@ -22,7 +23,14 @@ export class Game {
     this.initCamera()
     this.initEnv()
     this.engine.runRenderLoop(() => {
+      this.update()
       this.scene.render()
+    })
+  }
+
+  update = () => {
+    this.units.forEach((unit) => {
+      unit.update()
     })
   }
 
@@ -32,23 +40,20 @@ export class Game {
       this.config.camera.position,
       this.scene
     )
+    this.camera.minZ = 0.001
     this.camera.setTarget(this.config.camera.target)
     this.camera.attachControl(this.canvas, true)
   }
 
   initEnv = () => {
-    var light = new B.HemisphericLight(
-      "light1",
-      new B.Vector3(0, 1, 0),
-      this.scene
-    )
+    var light = new B.PointLight("light1", new B.Vector3(0, 0, 0), this.scene)
 
     light.intensity = 0.7
   }
 
   populatePlanets = () => {
-    this.config.planets.forEach((planet) => {
-      new Planet({ game: this, config: planet })
-    })
+    this.units = this.config.planets.map(
+      (planet) => new Planet({ game: this, config: planet })
+    )
   }
 }
