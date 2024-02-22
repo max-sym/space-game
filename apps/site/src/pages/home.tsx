@@ -8,6 +8,8 @@ export const Home = () => {
     new Game({
       canvas: canvas.current as HTMLCanvasElement,
     })
+
+    document.body.style.overflow = "hidden"
   }, [])
 
   return (

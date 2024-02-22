@@ -1,56 +1,81 @@
-import * as B from "@babylonjs/core/Legacy/legacy"
-import { GridMaterial } from "@babylonjs/materials"
+import { SimpleMaterial } from "@babylonjs/materials"
+import { B } from "~/b"
+import { PlanetConfig } from "~/data"
+
+export class Planet {
+  model: B.Mesh
+  game: Game
+  position: B.Vector3
+  config: PlanetConfig = {
+    name: "",
+    diameter: 1,
+    position: new B.Vector3(0, 0, 0),
+  }
+
+  constructor({ game, config }: { game: Game; config: PlanetConfig }) {
+    this.game = game
+    this.config = config
+    this.position = this.config.position
+
+    this.model = B.CreateSphere(
+      this.config.name,
+      { segments: 32, diameter: this.config.diameter },
+      this.game.scene
+    )
+
+    this.model.position = this.position
+    this.model.material = new SimpleMaterial("planet", this.game.scene)
+  }
+}
 
 export class Game {
   canvas: HTMLCanvasElement
+  scene: B.Scene
+  camera: B.FreeCamera
 
   constructor({ canvas }: { canvas: HTMLCanvasElement }) {
     this.canvas = canvas
     const engine = new B.Engine(canvas)
 
-    // Create our first scene.
-    var scene = new B.Scene(engine)
+    this.scene = new B.Scene(engine)
 
-    // This creates and positions a free camera (non-mesh)
-    var camera = new B.FreeCamera("camera1", new B.Vector3(0, 5, -10), scene)
-
-    // This targets the camera to scene origin
-    camera.setTarget(B.Vector3.Zero())
-
-    // This attaches the camera to the canvas
-    camera.attachControl(canvas, true)
-
-    // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
-    var light = new B.HemisphericLight("light1", new B.Vector3(0, 1, 0), scene)
-
-    // Default intensity is 1. Let's dim the light a small amount
-    light.intensity = 0.7
-
-    // Create a grid material
-    var material = new GridMaterial("grid", scene)
-
-    // Our built-in 'sphere' shape.
-    var sphere = B.CreateSphere("sphere1", { segments: 16, diameter: 2 }, scene)
-
-    // Move the sphere upward 1/2 its height
-    sphere.position.y = 2
-
-    // Affect a material
-    sphere.material = material
-
-    // Our built-in 'ground' shape.
-    var ground = B.CreateGround(
-      "ground1",
-      { width: 6, height: 6, subdivisions: 2 },
-      scene
+    this.camera = new B.FreeCamera(
+      "camera1",
+      new B.Vector3(0, 5, -10),
+      this.scene
     )
 
-    // Affect a material
-    ground.material = material
+    this.camera.setTarget(B.Vector3.Zero())
 
-    // Render every frame
+    this.camera.attachControl(canvas, true)
+
+    var light = new B.HemisphericLight(
+      "light1",
+      new B.Vector3(0, 1, 0),
+      this.scene
+    )
+
+    light.intensity = 0.7
+
+    const planets: PlanetConfig[] = [
+      {
+        name: "earth",
+        diameter: 1,
+        position: new B.Vector3(0, 0, 0),
+      },
+      {
+        name: "mars",
+        diameter: 2,
+        position: new B.Vector3(0, 0, 2),
+      },
+    ]
+
+    planets.forEach((planet) => {
+      new Planet({ game: this, config: planet })
+    })
+
     engine.runRenderLoop(() => {
-      scene.render()
+      this.scene.render()
     })
   }
 }
