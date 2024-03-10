@@ -13,11 +13,11 @@ export const Home = () => {
   }, [])
 
   return (
-    <div>
+    <div className="h-full">
       <canvas
         ref={canvas}
         touch-action="none"
-        className="w-full h-full block"
+        className="block w-full h-full"
       />
     </div>
   )

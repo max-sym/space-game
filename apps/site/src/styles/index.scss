@@ -19,6 +19,10 @@ html {
   }
 }
 
+#root {
+  @apply h-full w-full;
+}
+
 hr {
   @apply my-4 border-slate-200 dark:border-slate-700;
 }

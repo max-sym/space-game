@@ -1,6 +1,7 @@
 import { B } from "~/b"
 import { GameConfig, data } from "~/data"
 import { Planet, Unit } from "./planet"
+import { Grid } from "./grid"
 
 export class Game {
   canvas: HTMLCanvasElement
@@ -49,6 +50,10 @@ export class Game {
     var light = new B.PointLight("light1", new B.Vector3(0, 0, 0), this.scene)
 
     light.intensity = 0.7
+
+    if (this.config.showGrid) {
+      new Grid({ game: this })
+    }
   }
 
   populatePlanets = () => {

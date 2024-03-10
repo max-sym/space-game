@@ -16,6 +16,7 @@ export type PlanetConfig = {
 
 export type GameConfig = {
   planets: PlanetConfig[]
+  showGrid: boolean
   camera: {
     position: B.Vector3
     target: B.Vector3
@@ -27,6 +28,7 @@ export const data: GameConfig = {
     position: new B.Vector3(0, 5, -10),
     target: B.Vector3.Zero(),
   },
+  showGrid: true,
   planets: [
     {
       name: "earth",
@@ -43,7 +45,7 @@ export const data: GameConfig = {
     },
     {
       name: "mars",
-      diameter: 1,
+      diameter: 0.5,
       position: new B.Vector3(10, 0, 0),
       continents: [],
       color: "#331100",

@@ -22,6 +22,7 @@ export class Unit {
 
 export class Continent extends Unit {
   planet: Planet
+
   constructor({ planet, config }: { planet: Planet; config: ContinentConfig }) {
     super({ game: planet.game })
     this.planet = planet
