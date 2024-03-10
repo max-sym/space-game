@@ -56,7 +56,11 @@ export class Continent extends Unit {
     this.planet = planet
     this.model = B.CreateBox(
       config.name,
-      { size: config.size },
+      {
+        depth: config.depth,
+        height: config.size,
+        width: config.size,
+      },
       this.game.scene
     )
 
@@ -66,7 +70,7 @@ export class Continent extends Unit {
     this.position = this.planet.position.clone()
     const offset = sphericalPosition(
       new B.Vector3(),
-      this.planet.config.diameter / 2,
+      this.planet.config.diameter / 2 - config.offset,
       config.position.x * 360,
       config.position.y * 360
     )

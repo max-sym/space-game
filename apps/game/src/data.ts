@@ -5,6 +5,8 @@ export type ContinentConfig = {
   position: B.Vector2
   size: number
   color: string
+  depth: number
+  offset: number
 }
 
 export type PlanetConfig = {
@@ -39,8 +41,10 @@ export const data: GameConfig = {
         {
           name: "blandia",
           position: new B.Vector2(0.4, 0.4),
-          size: 0.1,
+          size: 0.3,
+          depth: 0.22,
           color: "#330000",
+          offset: 0.1,
         },
       ],
       color: "#004477",

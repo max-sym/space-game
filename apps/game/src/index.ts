@@ -7,7 +7,7 @@ import { Grid } from "./grid"
 export class Game {
   canvas: HTMLCanvasElement
   scene: B.Scene
-  camera: B.FreeCamera
+  camera: B.ArcRotateCamera
   config: GameConfig = data
   engine: B.Engine
   units: Unit[] = []
@@ -37,13 +37,17 @@ export class Game {
   }
 
   initCamera = () => {
-    this.camera = new B.FreeCamera(
+    this.camera = new B.ArcRotateCamera(
       "main-camera",
-      this.config.camera.position,
+      3.5,
+      1.3,
+      1,
+      // this.config.camera.target.position,
+      this.units[0].continents[0].position,
       this.scene
     )
+    this.camera.fov = 0.5
     this.camera.minZ = 0.001
-    this.camera.setTarget(this.config.camera.target)
     this.camera.attachControl(this.canvas, true)
   }
 
