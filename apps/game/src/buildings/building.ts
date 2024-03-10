@@ -36,6 +36,7 @@ export class Building extends Unit {
 
     const material = new B.StandardMaterial("building", this.game.scene)
     material.diffuseColor = B.Color3.FromHexString("#ff0000")
+    material.useLogarithmicDepth = true
 
     this.position = this.continent.position.clone()
     this.rotation = this.continent.rotation.clone()

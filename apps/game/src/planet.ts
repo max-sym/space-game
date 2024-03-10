@@ -28,8 +28,9 @@ export class Planet extends Unit {
     const material = new B.StandardMaterial("planet", this.game.scene)
 
     material.diffuseColor = B.Color3.FromHexString(this.config.color)
-    material.alpha = 0.7
+    material.alpha = 1
     material.specularPower = 100
+    // material.useLogarithmicDepth = true
     this.model.material = material
 
     this.createContinents()

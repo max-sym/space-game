@@ -41,13 +41,13 @@ export class Game {
       "main-camera",
       3.5,
       1.3,
-      1,
+      120,
       // this.config.camera.target.position,
       this.units[0].continents[0].position,
       this.scene
     )
     this.camera.fov = 0.5
-    this.camera.minZ = 0.001
+    this.camera.minZ = 0.1
     this.camera.attachControl(this.canvas, true)
   }
 
