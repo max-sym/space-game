@@ -1,9 +1,8 @@
 import { B } from "~/b"
-import { ContinentConfig } from "~/data"
+import { ContinentConfig, buildingClasses } from "~/data"
 import { Planet } from "./planet"
 import { Unit } from "./unit"
 import { Building } from "./buildings/building"
-import { PowerStation } from "./buildings/power-station"
 
 const sphericalPosition = (
   position: B.Vector3,
@@ -89,7 +88,8 @@ export class Continent extends Unit {
 
   populateBuildings() {
     this.config.buildings.forEach((buildingConfig) => {
-      const building = new PowerStation({
+      const buildingClass = buildingClasses[buildingConfig.type]
+      const building = new buildingClass({
         continent: this,
         config: buildingConfig,
         game: this.game,

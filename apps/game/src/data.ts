@@ -1,4 +1,6 @@
 import { B } from "~/b"
+import { PowerStation } from "./buildings/power-station"
+import { Mine } from "./buildings/mine"
 
 export type BuildingType = "power-station" | "mine" | "rocket-launching-site"
 
@@ -10,20 +12,26 @@ export type ModelType = {
 
 export const buildingModels: Record<BuildingType, ModelType> = {
   "power-station": {
-    width: 0.1,
-    length: 0.1,
-    height: 0.2,
+    width: 0.01,
+    length: 0.01,
+    height: 0.01,
   },
   mine: {
-    width: 0.1,
-    length: 0.1,
-    height: 0.5,
+    width: 0.01,
+    length: 0.01,
+    height: 0.01,
   },
   "rocket-launching-site": {
-    width: 0.2,
-    length: 0.2,
-    height: 0.1,
+    width: 0.01,
+    length: 0.01,
+    height: 0.01,
   },
+}
+
+export const buildingClasses: Record<BuildingType, any> = {
+  "power-station": PowerStation,
+  mine: Mine,
+  "rocket-launching-site": PowerStation,
 }
 
 export type BuildingConfig = {
@@ -86,19 +94,19 @@ export const data: GameConfig = {
             {
               id: 1,
               name: "Power Station",
-              position: new B.Vector2(0.2, 0.2),
+              position: new B.Vector2(0.1, 0.1),
               type: "power-station",
             },
             {
               id: 2,
               name: "Mine",
-              position: new B.Vector2(0.4, 0.4),
+              position: new B.Vector2(0.03, 0.0),
               type: "mine",
             },
             {
               id: 3,
               name: "Rocket Launching Site",
-              position: new B.Vector2(0.8, 0.8),
+              position: new B.Vector2(-0.06, 0.1),
               type: "rocket-launching-site",
             },
           ],
