@@ -4,6 +4,7 @@ export type ContinentConfig = {
   name: string
   position: B.Vector2
   size: number
+  color: string
 }
 
 export type PlanetConfig = {
@@ -25,8 +26,8 @@ export type GameConfig = {
 
 export const data: GameConfig = {
   camera: {
-    position: new B.Vector3(0, 5, -10),
-    target: B.Vector3.Zero(),
+    position: new B.Vector3(4, 2, -2),
+    target: new B.Vector3(7, 0, 0),
   },
   showGrid: true,
   planets: [
@@ -37,8 +38,9 @@ export const data: GameConfig = {
       continents: [
         {
           name: "blandia",
-          position: new B.Vector2(0, 0),
-          size: 0.5,
+          position: new B.Vector2(0.4, 0.4),
+          size: 0.1,
+          color: "#330000",
         },
       ],
       color: "#004477",

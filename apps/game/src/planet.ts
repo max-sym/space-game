@@ -1,41 +1,8 @@
-// import { StandardMaterial } from "@babylonjs/materials"
 import { B } from "~/b"
-import { ContinentConfig, PlanetConfig } from "~/data"
+import { PlanetConfig } from "~/data"
 import { Game } from "."
-
-export class Unit {
-  model: B.Mesh | null = null
-  game: Game
-  position: B.Vector3 = B.Vector3.Zero()
-  rotation: B.Vector3 = B.Vector3.Zero()
-
-  constructor({ game }: { game: Game }) {
-    this.game = game
-  }
-
-  update = () => {
-    if (this.model) {
-      this.model.position = this.position
-    }
-  }
-}
-
-export class Continent extends Unit {
-  planet: Planet
-
-  constructor({ planet, config }: { planet: Planet; config: ContinentConfig }) {
-    super({ game: planet.game })
-    this.planet = planet
-    this.model = B.CreateBox(
-      config.name,
-      { size: config.size },
-      this.game.scene
-    )
-
-    const material = new B.StandardMaterial("continent", this.game.scene)
-    material.diffuseColor = B.Color3.FromHexString("#00ff00")
-  }
-}
+import { Continent } from "./continent"
+import { Unit } from "./unit"
 
 export class Planet extends Unit {
   config: PlanetConfig = {
@@ -45,6 +12,7 @@ export class Planet extends Unit {
     continents: [],
     color: "blue",
   }
+  continents: Continent[] = []
 
   constructor({ game, config }: { game: Game; config: PlanetConfig }) {
     super({ game })
@@ -60,15 +28,23 @@ export class Planet extends Unit {
     const material = new B.StandardMaterial("planet", this.game.scene)
 
     material.diffuseColor = B.Color3.FromHexString(this.config.color)
+    material.alpha = 0.5
     material.specularPower = 100
     this.model.material = material
 
     this.createContinents()
   }
 
+  update() {
+    super.update()
+    this.continents.forEach((continent) => {
+      continent.update()
+    })
+  }
+
   createContinents = () => {
     this.config.continents.forEach((continent) => {
-      new Continent({ planet: this, config: continent })
+      this.continents.push(new Continent({ planet: this, config: continent }))
     })
   }
 }

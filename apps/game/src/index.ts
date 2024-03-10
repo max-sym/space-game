@@ -1,6 +1,7 @@
 import { B } from "~/b"
 import { GameConfig, data } from "~/data"
-import { Planet, Unit } from "./planet"
+import { Planet } from "./planet"
+import { Unit } from "./unit"
 import { Grid } from "./grid"
 
 export class Game {

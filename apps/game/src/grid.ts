@@ -1,5 +1,5 @@
 import { B } from "~/b"
-import { Unit } from "./planet"
+import { Unit } from "./unit"
 import { Game } from "."
 
 export class Grid extends Unit {
