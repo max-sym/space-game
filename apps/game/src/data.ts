@@ -1,5 +1,41 @@
 import { B } from "~/b"
 
+export type BuildingType = "power-station" | "mine" | "rocket-launching-site"
+
+export type ModelType = {
+  width: number
+  length: number
+  height: number
+}
+
+export const buildingModels: Record<BuildingType, ModelType> = {
+  "power-station": {
+    width: 0.1,
+    length: 0.1,
+    height: 0.2,
+  },
+  mine: {
+    width: 0.1,
+    length: 0.1,
+    height: 0.5,
+  },
+  "rocket-launching-site": {
+    width: 0.2,
+    length: 0.2,
+    height: 0.1,
+  },
+}
+
+export type BuildingConfig = {
+  id: number
+  name: string
+  /**
+   * Position relative to the continent
+   */
+  position: B.Vector2
+  type: BuildingType
+}
+
 export type ContinentConfig = {
   name: string
   position: B.Vector2
@@ -7,6 +43,7 @@ export type ContinentConfig = {
   color: string
   depth: number
   offset: number
+  buildings: BuildingConfig[]
 }
 
 export type PlanetConfig = {
@@ -45,6 +82,26 @@ export const data: GameConfig = {
           depth: 0.22,
           color: "#330000",
           offset: 0.1,
+          buildings: [
+            {
+              id: 1,
+              name: "Power Station",
+              position: new B.Vector2(0.2, 0.2),
+              type: "power-station",
+            },
+            {
+              id: 2,
+              name: "Mine",
+              position: new B.Vector2(0.4, 0.4),
+              type: "mine",
+            },
+            {
+              id: 3,
+              name: "Rocket Launching Site",
+              position: new B.Vector2(0.8, 0.8),
+              type: "rocket-launching-site",
+            },
+          ],
         },
       ],
       color: "#004477",

@@ -2,6 +2,8 @@ import { B } from "~/b"
 import { ContinentConfig } from "~/data"
 import { Planet } from "./planet"
 import { Unit } from "./unit"
+import { Building } from "./buildings/building"
+import { PowerStation } from "./buildings/power-station"
 
 const sphericalPosition = (
   position: B.Vector3,
@@ -50,10 +52,13 @@ const rotateTowardsCenter = (center: B.Vector3, position: B.Vector3) => {
 
 export class Continent extends Unit {
   planet: Planet
+  config: ContinentConfig
+  buildings: Building[] = []
 
   constructor({ planet, config }: { planet: Planet; config: ContinentConfig }) {
     super({ game: planet.game })
     this.planet = planet
+    this.config = config
     this.model = B.CreateBox(
       config.name,
       {
@@ -66,6 +71,8 @@ export class Continent extends Unit {
 
     const material = new B.StandardMaterial("continent", this.game.scene)
     material.diffuseColor = B.Color3.FromHexString("#00ff00")
+    material.alpha = 0.7
+    this.model.material = material
 
     this.position = this.planet.position.clone()
     const offset = sphericalPosition(
@@ -77,5 +84,22 @@ export class Continent extends Unit {
 
     this.position = this.position.add(offset)
     this.rotation = rotateTowardsCenter(this.planet.position, this.position)
+    this.populateBuildings()
+  }
+
+  populateBuildings() {
+    this.config.buildings.forEach((buildingConfig) => {
+      const building = new PowerStation({
+        continent: this,
+        config: buildingConfig,
+        game: this.game,
+      })
+      this.buildings.push(building)
+    })
+  }
+
+  update() {
+    super.update()
+    this.buildings.forEach((building) => building.update())
   }
 }
