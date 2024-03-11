@@ -5,6 +5,7 @@ import { Unit } from "./units/unit"
 import { Grid } from "./grid"
 import { Player } from "./player"
 import { Continent } from "./units/continent"
+import { GameGUI } from "./gui/gui"
 
 export class Game {
   canvas: HTMLCanvasElement
@@ -14,6 +15,7 @@ export class Game {
   engine: B.Engine
   units: Unit[] = []
   players: Player[] = []
+  gui: GameGUI
 
   constructor({ canvas }: { canvas: HTMLCanvasElement }) {
     this.canvas = canvas
@@ -21,6 +23,7 @@ export class Game {
     this.scene = new B.Scene(this.engine)
 
     this.init()
+    this.gui = new GameGUI({ game: this })
   }
 
   createPlayers = () => {
