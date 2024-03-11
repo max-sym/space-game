@@ -1,20 +1,15 @@
-import { Continent } from '~/continent';
-import {
-  BuildingConfig,
-  buildingModels,
-} from '~/data';
-import { Game } from '..';
-import { Building } from './building';
+import { Continent } from "~/continent"
+import { BuildingConfig, buildingModels } from "~/data"
+import { Game } from ".."
+import { Building } from "./building"
 
 /**
  * Represents a Mine building in the game.
  */
 export class Mine extends Building {
   /** Timestamp of the last stone production. */
-  lastStoneProductionTime: number = Date.now();
-  static stoneGeneratedEvent = new Event(
-    'stoneGenerated'
-  );
+  lastStoneProductionTime: number = Date.now()
+  static stoneGeneratedEvent = new Event("stoneGenerated")
 
   /**
    * Creates a new instance of the Mine class.
@@ -27,9 +22,9 @@ export class Mine extends Building {
     config,
     game,
   }: {
-    continent: Continent;
-    config: BuildingConfig;
-    game: Game;
+    continent: Continent
+    config: BuildingConfig
+    game: Game
   }) {
     // Call the constructor of the parent class (Building)
     super({
@@ -37,8 +32,8 @@ export class Mine extends Building {
       config,
       game,
       // Use the mine building model
-      buildingModel: buildingModels['mine'],
-    });
+      buildingModel: buildingModels["mine"],
+    })
   }
 
   /**
@@ -46,9 +41,9 @@ export class Mine extends Building {
    */
   update() {
     // Call the update method of the parent class (Building)
-    super.update();
+    super.update()
     // Produce stone resources
-    this.produceStone();
+    this.produceStone()
   }
 
   /**
@@ -56,28 +51,22 @@ export class Mine extends Building {
    */
   produceStone() {
     // Get the current timestamp
-    const currentTime = Date.now();
+    const currentTime = Date.now()
     // Calculate the time passed since the last stone production in seconds
     const timePassedInSeconds =
-      (currentTime -
-        this.lastStoneProductionTime) /
-      1000;
+      (currentTime - this.lastStoneProductionTime) / 1000
 
     // Check if at least 30 seconds have passed since the last stone production
     if (timePassedInSeconds >= 30) {
-      // Define the amount of stone to produce
-      const stoneProduced = 10;
+      // Define the amount of stones to produce
+      const stoneProduced = 10
       // Add the produced stone to the continent's resources
-      this.continent.addStone(stoneProduced);
+      this.continent.addStone(stoneProduced)
       // Log the production of stone
-      console.log(
-        `+${stoneProduced} stone produced`
-      );
-      document.dispatchEvent(
-        Mine.stoneGeneratedEvent
-      );
+      console.log(`+${stoneProduced} stone produced`)
+      document.dispatchEvent(Mine.stoneGeneratedEvent)
       // Update the timestamp of the last stone production
-      this.lastStoneProductionTime = currentTime;
+      this.lastStoneProductionTime = currentTime
     }
   }
 }
