@@ -51,6 +51,8 @@ export class Planet extends Unit {
 
       if (!player) throw new Error("Player not found")
 
+      console.log("player", player, "continent", continent)
+
       this.continents.push(new Continent({ player, planet: this, config: continent }))
     })
   }
