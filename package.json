@@ -6,5 +6,8 @@
     "dev": "pnpm -r run dev"
   },
   "keywords": [],
-  "author": ""
+  "author": "",
+  "devDependencies": {
+    "prettier": "^3.2.5"
+  }
 }

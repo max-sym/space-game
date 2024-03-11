@@ -12,6 +12,9 @@ import { Building } from './building';
 export class Mine extends Building {
   /** Timestamp of the last stone production. */
   lastStoneProductionTime: number = Date.now();
+  static stoneGeneratedEvent = new Event(
+    'stoneGenerated'
+  );
 
   /**
    * Creates a new instance of the Mine class.
@@ -69,6 +72,9 @@ export class Mine extends Building {
       // Log the production of stone
       console.log(
         `+${stoneProduced} stone produced`
+      );
+      document.dispatchEvent(
+        Mine.stoneGeneratedEvent
       );
       // Update the timestamp of the last stone production
       this.lastStoneProductionTime = currentTime;
