@@ -39,8 +39,8 @@ export class Game {
   initCamera = () => {
     this.camera = new B.ArcRotateCamera(
       "main-camera",
-      3.5,
-      1.3,
+      0.5,
+      0.5,
       120,
       // this.config.camera.target.position,
       this.units[0].continents[0].position,
@@ -49,6 +49,10 @@ export class Game {
     this.camera.fov = 0.5
     this.camera.minZ = 0.1
     this.camera.attachControl(this.canvas, true)
+    // this.camera.upVector = this.units[0].continents[0].rotation.clone()
+    this.camera.upVector = this.units[0].continents[0].rotation
+      .clone()
+      .normalize()
   }
 
   initEnv = () => {

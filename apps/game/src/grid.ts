@@ -6,7 +6,7 @@ export class Grid extends Unit {
   constructor({ game }: { game: Game }) {
     super({ game })
     // Parameters
-    var gridSize = 30 // Size of the grid
+    var gridSize = 3000 // Size of the grid
     var gridLines = 30 // Number of lines in the grid
     var step = gridSize / gridLines // Distance between lines
 
