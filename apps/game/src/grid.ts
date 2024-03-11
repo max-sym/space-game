@@ -17,10 +17,7 @@ export class Grid extends Unit {
       B.MeshBuilder.CreateLines(
         "gridLine",
         {
-          points: [
-            new B.Vector3(-gridSize / 2, 0, i),
-            new B.Vector3(gridSize / 2, 0, i),
-          ],
+          points: [new B.Vector3(-gridSize / 2, 0, i), new B.Vector3(gridSize / 2, 0, i)],
           colors: [greenColor, greenColor],
         },
         this.game.scene
@@ -32,10 +29,7 @@ export class Grid extends Unit {
       B.MeshBuilder.CreateLines(
         "gridLine",
         {
-          points: [
-            new B.Vector3(i, 0, -gridSize / 2),
-            new B.Vector3(i, 0, gridSize / 2),
-          ],
+          points: [new B.Vector3(i, 0, -gridSize / 2), new B.Vector3(i, 0, gridSize / 2)],
           colors: [greenColor, greenColor],
         },
         this.game.scene

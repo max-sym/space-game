@@ -14,11 +14,7 @@ export const Home = () => {
 
   return (
     <div className="h-full">
-      <canvas
-        ref={canvas}
-        touch-action="none"
-        className="block w-full h-full"
-      />
+      <canvas ref={canvas} touch-action="none" className="block w-full h-full" />
     </div>
   )
 }

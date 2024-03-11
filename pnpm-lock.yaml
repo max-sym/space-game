@@ -21,6 +21,9 @@ importers:
       '@babylonjs/materials':
         specifier: ^6.46.0
         version: 6.46.0(@babylonjs/core@6.46.0)
+      prettier:
+        specifier: ^3.2.5
+        version: 3.2.5
       typescript:
         specifier: ^5.3.3
         version: 5.3.3

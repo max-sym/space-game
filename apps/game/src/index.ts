@@ -50,9 +50,7 @@ export class Game {
     this.camera.minZ = 0.1
     this.camera.attachControl(this.canvas, true)
     // this.camera.upVector = this.units[0].continents[0].rotation.clone()
-    this.camera.upVector = this.units[0].continents[0].rotation
-      .clone()
-      .normalize()
+    this.camera.upVector = this.units[0].continents[0].rotation.clone().normalize()
   }
 
   initEnv = () => {

@@ -53,8 +53,7 @@ export class Mine extends Building {
     // Get the current timestamp
     const currentTime = Date.now()
     // Calculate the time passed since the last stone production in seconds
-    const timePassedInSeconds =
-      (currentTime - this.lastStoneProductionTime) / 1000
+    const timePassedInSeconds = (currentTime - this.lastStoneProductionTime) / 1000
 
     // Check if at least 30 seconds have passed since the last stone production
     if (timePassedInSeconds >= 30) {
