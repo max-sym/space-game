@@ -28,6 +28,6 @@ export class Player {
    * Logs the amount of stone resources.
    */
   logResourceAmount() {
-    console.log("Total Stone Amount:", this.state.resources.stone)
+    // console.log("Total Stone Amount:", this.state.resources.stone)
   }
 }

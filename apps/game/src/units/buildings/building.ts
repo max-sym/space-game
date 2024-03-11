@@ -52,14 +52,14 @@ export class Building<T extends ModelType> extends Unit {
 
     const rotationVector = this.rotation
 
-    let quaternion = B.Quaternion.RotationYawPitchRoll(
+    const quaternion = B.Quaternion.RotationYawPitchRoll(
       rotationVector.y,
       rotationVector.x,
       rotationVector.z
     )
 
     // Create a rotation matrix from the quaternion
-    let rotationMatrix = new B.Matrix()
+    const rotationMatrix = new B.Matrix()
     quaternion.toRotationMatrix(rotationMatrix)
 
     // Default forward vector
@@ -68,9 +68,9 @@ export class Building<T extends ModelType> extends Unit {
     const right = new B.Vector3(1, 0, 0)
 
     // Apply the rotation to the forward vector
-    let direction = B.Vector3.TransformNormal(forward, rotationMatrix)
-    let directionRight = B.Vector3.TransformNormal(right, rotationMatrix)
-    let directionUp = B.Vector3.TransformNormal(up, rotationMatrix)
+    const direction = B.Vector3.TransformNormal(forward, rotationMatrix)
+    const directionRight = B.Vector3.TransformNormal(right, rotationMatrix)
+    const directionUp = B.Vector3.TransformNormal(up, rotationMatrix)
 
     const offset = this.continent.config.depth / 2 + this.buildingModel.model.height / 2
 
