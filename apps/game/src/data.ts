@@ -5,26 +5,35 @@ import { Mine } from "./buildings/mine"
 export type BuildingType = "power-station" | "mine" | "rocket-launching-site"
 
 export type ModelType = {
-  width: number
-  length: number
-  height: number
+  model: {
+    width: number
+    length: number
+    height: number
+    color?: string
+  }
 }
 
 export const buildingModels: Record<BuildingType, ModelType> = {
   "power-station": {
-    width: 1,
-    length: 1,
-    height: 1,
+    model: {
+      width: 1,
+      length: 1,
+      height: 1,
+    },
   },
   mine: {
-    width: 1,
-    length: 1,
-    height: 1,
+    model: {
+      width: 1,
+      length: 1,
+      height: 1,
+    },
   },
   "rocket-launching-site": {
-    width: 1,
-    length: 1,
-    height: 1,
+    model: {
+      width: 1,
+      length: 1,
+      height: 1,
+    },
   },
 }
 

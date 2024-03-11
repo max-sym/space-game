@@ -27,9 +27,9 @@ export class Building extends Unit {
     this.model = B.CreateBox(
       config.name,
       {
-        depth: this.buildingModel.height,
-        height: this.buildingModel.length,
-        width: this.buildingModel.width,
+        depth: this.buildingModel.model.height,
+        height: this.buildingModel.model.length,
+        width: this.buildingModel.model.width,
       },
       this.game.scene
     )
@@ -63,7 +63,7 @@ export class Building extends Unit {
     let directionRight = B.Vector3.TransformNormal(right, rotationMatrix)
     let directionUp = B.Vector3.TransformNormal(up, rotationMatrix)
 
-    const offset = this.continent.config.depth / 2 + this.buildingModel.height / 2
+    const offset = this.continent.config.depth / 2 + this.buildingModel.model.height / 2
 
     // Normalize and scale the direction vector
     direction.normalize().scaleInPlace(offset)

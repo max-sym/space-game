@@ -9,7 +9,7 @@ import { Building } from "./building"
 export class Mine extends Building {
   /** Timestamp of the last stone production. */
   lastStoneProductionTime: number = Date.now()
-  static stoneGeneratedEvent = new Event("stoneGenerated")
+  stoneGeneratedEvent = new Event("stoneGenerated")
 
   /**
    * Creates a new instance of the Mine class.
