@@ -4,6 +4,8 @@ import { Planet } from "./planet"
 import { Unit } from "./unit"
 import { Building } from "./buildings/building"
 import { sphericalPosition, rotateTowardsCenter } from "../utils"
+import { ModelType } from "~/data/buildings"
+import { Player } from "~/player"
 
 /**
  * Represents a continent in the game world.
@@ -12,18 +14,29 @@ export class Continent extends Unit {
   // Properties
   planet: Planet // The planet that the continent belongs to
   config: ContinentConfig // Configuration of the continent
-  buildings: Building[] = [] // Buildings present on the continent
+  buildings: Building<ModelType>[] = [] // Buildings present on the continent
   resources: { [resourceType: string]: number } = {} // Continent's resources (e.g., stone, metal)
   lastResourceLogTime: number = Date.now() // Timestamp of the last resource log
+
+  player: Player
 
   /**
    * Constructs a new Continent object.
    * @param planet The planet that the continent belongs to.
    * @param config Configuration of the continent.
    */
-  constructor({ planet, config }: { planet: Planet; config: ContinentConfig }) {
+  constructor({
+    player,
+    planet,
+    config,
+  }: {
+    player: Player
+    planet: Planet
+    config: ContinentConfig
+  }) {
     // Call the constructor of the parent class (Unit)
     super({ game: planet.game })
+    this.player = player
 
     // Initialize properties
     this.planet = planet
@@ -69,6 +82,7 @@ export class Continent extends Unit {
     this.config.buildings.forEach((buildingConfig) => {
       const buildingClass = buildingClasses[buildingConfig.type]
       const building = new buildingClass({
+        player: this.player,
         continent: this,
         config: buildingConfig,
         game: this.game,

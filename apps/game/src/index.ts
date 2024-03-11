@@ -3,6 +3,7 @@ import { GameConfig, data } from "~/data"
 import { Planet } from "./units/planet"
 import { Unit } from "./units/unit"
 import { Grid } from "./grid"
+import { Player } from "./player"
 
 export class Game {
   canvas: HTMLCanvasElement
@@ -11,6 +12,7 @@ export class Game {
   config: GameConfig = data
   engine: B.Engine
   units: Unit[] = []
+  players: Player[] = []
 
   constructor({ canvas }: { canvas: HTMLCanvasElement }) {
     this.canvas = canvas
@@ -20,7 +22,14 @@ export class Game {
     this.init()
   }
 
+  createPlayers = () => {
+    this.config.players.forEach((playerConfig) => {
+      this.players.push(new Player({ game: this, config: playerConfig }))
+    })
+  }
+
   init = () => {
+    this.createPlayers()
     this.populatePlanets()
     this.initCamera()
     this.initEnv()

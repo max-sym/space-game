@@ -21,6 +21,7 @@ export type BuildingConfig = {
 
 export type ContinentConfig = {
   name: string
+  playerId?: number
   position: B.Vector2
   size: number
   color: string
@@ -37,9 +38,26 @@ export type PlanetConfig = {
   color: string
 }
 
+export type PlayerState = {
+  resources: {
+    stone: number
+    metal: number
+    energy: number
+    money: number
+  }
+}
+
+export type PlayerConfig = {
+  id: number
+  name: string
+  color: string
+  state: PlayerState
+}
+
 export type GameConfig = {
   planets: PlanetConfig[]
   showGrid: boolean
+  players: PlayerConfig[]
   camera: {
     position: B.Vector3
     target: B.Vector3
@@ -52,6 +70,34 @@ export const data: GameConfig = {
     target: new B.Vector3(700, 0, 0),
   },
   showGrid: true,
+  players: [
+    {
+      id: 1,
+      name: "Blue",
+      color: "#005500",
+      state: {
+        resources: {
+          stone: 100,
+          metal: 100,
+          energy: 100,
+          money: 100,
+        },
+      },
+    },
+    {
+      id: 2,
+      name: "Red",
+      color: "#770000",
+      state: {
+        resources: {
+          stone: 100,
+          metal: 100,
+          energy: 100,
+          money: 100,
+        },
+      },
+    },
+  ],
   planets: [
     {
       name: "earth",
@@ -60,6 +106,7 @@ export const data: GameConfig = {
       continents: [
         {
           name: "blandia",
+          playerId: 1,
           position: new B.Vector2(0.4, 0.4),
           size: 30,
           depth: 22,

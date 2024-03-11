@@ -45,7 +45,13 @@ export class Planet extends Unit {
 
   createContinents = () => {
     this.config.continents.forEach((continent) => {
-      this.continents.push(new Continent({ planet: this, config: continent }))
+      const player = this.game.players.find(
+        (player) => player.config.id === continent.playerId
+      )
+
+      if (!player) throw new Error("Player not found")
+
+      this.continents.push(new Continent({ player, planet: this, config: continent }))
     })
   }
 }

@@ -4,18 +4,22 @@ import { ModelType } from "~/data/buildings"
 import { Unit } from "~/units/unit"
 import { Game } from "../.."
 import { B } from "~/b"
+import { Player } from "~/player"
 
 export class Building<T extends ModelType> extends Unit {
   continent: Continent
   config: BuildingConfig
   buildingModel: T
+  player: Player
 
   constructor({
+    player,
     continent,
     config,
     game,
     buildingModel,
   }: {
+    player: Player
     continent: Continent
     config: BuildingConfig
     game: Game
@@ -23,6 +27,7 @@ export class Building<T extends ModelType> extends Unit {
   }) {
     super({ game })
     this.continent = continent
+    this.player = player
     this.buildingModel = buildingModel
     this.config = config
     this.model = B.CreateBox(
