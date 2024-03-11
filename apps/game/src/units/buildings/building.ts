@@ -11,23 +11,26 @@ export class Building<T extends ModelType> extends Unit {
   config: BuildingConfig
   buildingModel: T
   player: Player
+  type = "building"
 
   constructor({
-    player,
-    continent,
     config,
     game,
     buildingModel,
   }: {
-    player: Player
-    continent: Continent
     config: BuildingConfig
     game: Game
     buildingModel: ModelType
   }) {
     super({ game })
-    this.continent = continent
-    this.player = player
+    this.continent = this.game.units.find(
+      (unit) => unit.type === "continent" && unit.config.id === config.continentId
+    ) as Continent
+
+    this.player = this.game.players.find(
+      (player) => player.config.id === config.playerId
+    ) as Player
+
     this.buildingModel = buildingModel
     this.config = config
     this.model = B.CreateBox(

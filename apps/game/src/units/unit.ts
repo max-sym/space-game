@@ -2,6 +2,7 @@ import { B } from "~/b"
 import { Game } from ".."
 
 export class Unit {
+  type: UnitType
   model: B.Mesh | null = null
   game: Game
   position: B.Vector3 = B.Vector3.Zero()

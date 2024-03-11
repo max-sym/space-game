@@ -1,18 +1,11 @@
 import { B } from "~/b"
 import { PlanetConfig } from "~/data"
 import { Game } from ".."
-import { Continent } from "./continent"
 import { Unit } from "./unit"
 
 export class Planet extends Unit {
-  config: PlanetConfig = {
-    name: "",
-    diameter: 1,
-    position: new B.Vector3(0, 0, 0),
-    continents: [],
-    color: "blue",
-  }
-  continents: Continent[] = []
+  config: PlanetConfig
+  type = "planet"
 
   constructor({ game, config }: { game: Game; config: PlanetConfig }) {
     super({ game })
@@ -32,26 +25,5 @@ export class Planet extends Unit {
     material.specularPower = 100
     // material.useLogarithmicDepth = true
     this.model.material = material
-
-    this.createContinents()
-  }
-
-  update() {
-    super.update()
-    this.continents.forEach((continent) => {
-      continent.update()
-    })
-  }
-
-  createContinents = () => {
-    this.config.continents.forEach((continent) => {
-      const player = this.game.players.find(
-        (player) => player.config.id === continent.playerId
-      )
-
-      if (!player) throw new Error("Player not found")
-
-      this.continents.push(new Continent({ player, planet: this, config: continent }))
-    })
   }
 }

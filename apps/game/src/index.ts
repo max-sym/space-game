@@ -1,9 +1,10 @@
 import { B } from "~/b"
-import { GameConfig, data } from "~/data"
+import { GameConfig, buildingClasses, data } from "~/data"
 import { Planet } from "./units/planet"
 import { Unit } from "./units/unit"
 import { Grid } from "./grid"
 import { Player } from "./player"
+import { Continent } from "./units/continent"
 
 export class Game {
   canvas: HTMLCanvasElement
@@ -31,6 +32,8 @@ export class Game {
   init = () => {
     this.createPlayers()
     this.populatePlanets()
+    this.populateContinents()
+    this.populateBuildings()
     this.initCamera()
     this.initEnv()
     this.engine.runRenderLoop(() => {
@@ -43,6 +46,9 @@ export class Game {
     this.units.forEach((unit) => {
       unit.update()
     })
+    this.players.forEach((player) => {
+      player.update()
+    })
   }
 
   initCamera = () => {
@@ -52,7 +58,7 @@ export class Game {
       1.5,
       100,
       // this.config.camera.target.position,
-      this.units[0].continents[0].position,
+      this.units.find((u) => u.type === "continent" && u.config.id === 1).position,
       this.scene
     )
     this.camera.fov = 0.4
@@ -72,8 +78,29 @@ export class Game {
   }
 
   populatePlanets = () => {
-    this.units = this.config.planets.map(
-      (planet) => new Planet({ game: this, config: planet })
-    )
+    this.config.planets.forEach((planet) => {
+      this.units.push(new Planet({ game: this, config: planet }))
+    })
+  }
+
+  populateContinents = () => {
+    this.config.continents.forEach((continent) => {
+      this.units.push(new Continent({ game: this, config: continent }))
+    })
+  }
+
+  /**
+   * Populates buildings on the continent based on the configuration.
+   */
+  populateBuildings() {
+    this.config.buildings.forEach((buildingConfig) => {
+      const buildingClass = buildingClasses[buildingConfig.type]
+      const building = new buildingClass({
+        continent: this,
+        config: buildingConfig,
+        game: this,
+      })
+      this.units.push(building)
+    })
   }
 }

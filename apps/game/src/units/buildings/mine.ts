@@ -63,7 +63,7 @@ export class Mine extends Building<MineConfig> {
     // Check if at least 30 seconds have passed since the last stone production
     if (timePassedInSeconds >= 1) {
       // Add the produced stone to the continent's resources
-      this.continent.addStone(this.buildingModel.production.rate)
+      this.player.state.resources.stone += this.buildingModel.production.rate
       // Log the production of stone
       // console.log(`+${stoneProduced} stone produced`)
       // document.dispatchEvent(Mine.stoneGeneratedEvent)
