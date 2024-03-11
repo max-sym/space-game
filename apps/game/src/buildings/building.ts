@@ -1,5 +1,6 @@
 import { Continent } from "~/continent"
-import { BuildingConfig, ModelType } from "~/data"
+import { BuildingConfig } from "~/data"
+import { ModelType } from "~/data/buildings"
 import { Unit } from "~/unit"
 import { Game } from ".."
 import { B } from "~/b"
@@ -35,8 +36,8 @@ export class Building extends Unit {
     )
 
     const material = new B.StandardMaterial("building", this.game.scene)
-    material.diffuseColor = B.Color3.FromHexString("#ff0000")
-    material.useLogarithmicDepth = true
+    material.diffuseColor = B.Color3.FromHexString(this.buildingModel.model.color)
+    this.model.material = material
 
     this.position = this.continent.position.clone()
     this.rotation = this.continent.rotation.clone()

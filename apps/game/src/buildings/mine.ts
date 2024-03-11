@@ -1,5 +1,6 @@
 import { Continent } from "~/continent"
-import { BuildingConfig, buildingModels } from "~/data"
+import { BuildingConfig } from "~/data"
+import { buildingModels } from "~/data/buildings"
 import { Game } from ".."
 import { Building } from "./building"
 

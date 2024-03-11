@@ -55,7 +55,7 @@ export class Game {
   initEnv = () => {
     var light = new B.PointLight("light1", new B.Vector3(0, 0, 0), this.scene)
 
-    light.intensity = 0.7
+    light.intensity = 1.3
 
     if (this.config.showGrid) {
       new Grid({ game: this })

@@ -1,41 +1,7 @@
 import { B } from "~/b"
-import { PowerStation } from "./buildings/power-station"
-import { Mine } from "./buildings/mine"
-
-export type BuildingType = "power-station" | "mine" | "rocket-launching-site"
-
-export type ModelType = {
-  model: {
-    width: number
-    length: number
-    height: number
-    color?: string
-  }
-}
-
-export const buildingModels: Record<BuildingType, ModelType> = {
-  "power-station": {
-    model: {
-      width: 1,
-      length: 1,
-      height: 1,
-    },
-  },
-  mine: {
-    model: {
-      width: 1,
-      length: 1,
-      height: 1,
-    },
-  },
-  "rocket-launching-site": {
-    model: {
-      width: 1,
-      length: 1,
-      height: 1,
-    },
-  },
-}
+import { PowerStation } from "../buildings/power-station"
+import { Mine } from "../buildings/mine"
+import { BuildingType } from "./buildings"
 
 export const buildingClasses: Record<BuildingType, any> = {
   "power-station": PowerStation,
