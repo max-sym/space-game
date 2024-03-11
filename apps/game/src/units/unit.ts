@@ -1,5 +1,5 @@
 import { B } from "~/b"
-import { Game } from "."
+import { Game } from ".."
 
 export class Unit {
   model: B.Mesh | null = null

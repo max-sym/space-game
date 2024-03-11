@@ -1,6 +1,6 @@
 import { B } from "~/b"
 import { PlanetConfig } from "~/data"
-import { Game } from "."
+import { Game } from ".."
 import { Continent } from "./continent"
 import { Unit } from "./unit"
 

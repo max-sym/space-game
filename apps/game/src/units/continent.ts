@@ -3,7 +3,7 @@ import { ContinentConfig, buildingClasses } from "~/data"
 import { Planet } from "./planet"
 import { Unit } from "./unit"
 import { Building } from "./buildings/building"
-import { sphericalPosition, rotateTowardsCenter } from "./utils"
+import { sphericalPosition, rotateTowardsCenter } from "../utils"
 
 /**
  * Represents a continent in the game world.

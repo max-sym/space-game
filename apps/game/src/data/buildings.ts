@@ -9,13 +9,38 @@ export type ModelType = {
   }
 }
 
-export const buildingModels: Record<BuildingType, ModelType> = {
+export type PowerStationConfig = ModelType & {
+  production: {
+    energy: number
+  }
+}
+
+export type MineConfig = ModelType & {
+  production: {
+    /**
+     * Rate of production per second.
+     */
+    rate: number
+  }
+}
+
+export type RocketLaunchingSiteConfig = ModelType
+
+export type SpecificBuildingConfig =
+  | PowerStationConfig
+  | MineConfig
+  | RocketLaunchingSiteConfig
+
+export const buildingModels: Record<BuildingType, SpecificBuildingConfig> = {
   "power-station": {
     model: {
       width: 0.8,
       length: 0.8,
       height: 1,
       color: "#000088",
+    },
+    production: {
+      energy: 1,
     },
   },
   mine: {
@@ -24,6 +49,9 @@ export const buildingModels: Record<BuildingType, ModelType> = {
       length: 1,
       height: 0.5,
       color: "#880000",
+    },
+    production: {
+      rate: 1,
     },
   },
   "rocket-launching-site": {

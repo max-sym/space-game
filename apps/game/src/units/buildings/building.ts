@@ -1,14 +1,14 @@
-import { Continent } from "~/continent"
+import { Continent } from "~/units/continent"
 import { BuildingConfig } from "~/data"
 import { ModelType } from "~/data/buildings"
-import { Unit } from "~/unit"
-import { Game } from ".."
+import { Unit } from "~/units/unit"
+import { Game } from "../.."
 import { B } from "~/b"
 
-export class Building extends Unit {
+export class Building<T extends ModelType> extends Unit {
   continent: Continent
   config: BuildingConfig
-  buildingModel: ModelType
+  buildingModel: T
 
   constructor({
     continent,

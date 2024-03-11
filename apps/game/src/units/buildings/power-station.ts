@@ -1,7 +1,7 @@
-import { Continent } from "~/continent"
+import { Continent } from "~/units/continent"
 import { BuildingConfig } from "~/data"
 import { buildingModels } from "~/data/buildings"
-import { Game } from ".."
+import { Game } from "../.."
 import { Building } from "./building"
 
 export class PowerStation extends Building {

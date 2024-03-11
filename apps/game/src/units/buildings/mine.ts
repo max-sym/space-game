@@ -1,13 +1,13 @@
-import { Continent } from "~/continent"
+import { Continent } from "~/units/continent"
 import { BuildingConfig } from "~/data"
-import { buildingModels } from "~/data/buildings"
-import { Game } from ".."
+import { MineConfig, buildingModels } from "~/data/buildings"
+import { Game } from "../.."
 import { Building } from "./building"
 
 /**
  * Represents a Mine building in the game.
  */
-export class Mine extends Building {
+export class Mine extends Building<MineConfig> {
   /** Timestamp of the last stone production. */
   lastStoneProductionTime: number = Date.now()
   stoneGeneratedEvent = new Event("stoneGenerated")
@@ -57,14 +57,12 @@ export class Mine extends Building {
     const timePassedInSeconds = (currentTime - this.lastStoneProductionTime) / 1000
 
     // Check if at least 30 seconds have passed since the last stone production
-    if (timePassedInSeconds >= 30) {
-      // Define the amount of stones to produce
-      const stoneProduced = 10
+    if (timePassedInSeconds >= 1) {
       // Add the produced stone to the continent's resources
-      this.continent.addStone(stoneProduced)
+      this.continent.addStone(this.buildingModel.production.rate)
       // Log the production of stone
-      console.log(`+${stoneProduced} stone produced`)
-      document.dispatchEvent(Mine.stoneGeneratedEvent)
+      // console.log(`+${stoneProduced} stone produced`)
+      // document.dispatchEvent(Mine.stoneGeneratedEvent)
       // Update the timestamp of the last stone production
       this.lastStoneProductionTime = currentTime
     }

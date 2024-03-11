@@ -1,6 +1,6 @@
 import { B } from "~/b"
-import { PowerStation } from "../buildings/power-station"
-import { Mine } from "../buildings/mine"
+import { PowerStation } from "../units/buildings/power-station"
+import { Mine } from "../units/buildings/mine"
 import { BuildingType } from "./buildings"
 
 export const buildingClasses: Record<BuildingType, any> = {
