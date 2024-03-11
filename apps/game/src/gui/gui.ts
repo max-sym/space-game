@@ -1,18 +1,30 @@
 import { GUI } from "~/b"
 import { Game } from ".."
 
-// Subscribe to the stoneGenerated event
-// document.addEventListener("stoneGenerated", () => {
-//   // Update the text block with the stone generation message
-//   stoneMessage.text = "+10 stone produced" // Update with the appropriate message
-//   // Reset the message after a certain duration (optional)
-//   setTimeout(() => {
-//     stoneMessage.text = ""
-//   }, 5000) // 5000 milliseconds (5 seconds) for example
-// })
+export type CursorMode = "select" | "power-plant" | "mine"
+
+const buttons: {
+  name: string
+  mode: CursorMode
+}[] = [
+  {
+    name: "Select",
+    mode: "select",
+  },
+  {
+    name: "Power Plant",
+    mode: "power-plant",
+  },
+  {
+    name: "Mine",
+    mode: "mine",
+  },
+]
 
 export class GameGUI {
   game: Game
+  panel: GUI.StackPanel
+  cursorMode: CursorMode = "select"
 
   constructor({ game }: { game: Game }) {
     this.game = game
@@ -22,17 +34,21 @@ export class GameGUI {
     panel.width = "220px"
     advancedTexture.addControl(panel)
     panel.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT
+    this.panel = panel
 
-    const button = GUI.Button.CreateSimpleButton("but", "Click Me")
-    button.height = "40px"
-    button.color = "white"
-    button.background = "green"
-    panel.addControl(button)
+    this.populateButtons()
+  }
 
-    const button2 = GUI.Button.CreateSimpleButton("but2", "Click Me also!")
-    button2.height = "40px"
-    button2.color = "white"
-    button2.background = "green"
-    panel.addControl(button2)
+  populateButtons = () => {
+    buttons.forEach((button) => {
+      const buttonControl = GUI.Button.CreateSimpleButton("but", button.name)
+      buttonControl.height = "40px"
+      buttonControl.color = "white"
+      buttonControl.background = "green"
+      this.panel.addControl(buttonControl)
+      buttonControl.onPointerUpObservable.add(() => {
+        this.cursorMode = button.mode
+      })
+    })
   }
 }
