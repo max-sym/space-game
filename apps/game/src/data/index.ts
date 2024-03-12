@@ -96,10 +96,10 @@ export const data: GameConfig = {
       color: "#770000",
       state: {
         resources: {
-          stone: 100,
-          metal: 100,
-          energy: 100,
-          money: 100,
+          stone: 1200,
+          metal: 165400,
+          energy: 16400,
+          money: 198700,
         },
       },
     },

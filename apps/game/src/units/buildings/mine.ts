@@ -1,3 +1,4 @@
+import { B } from "~/b"
 import { Continent } from "~/units/continent"
 import { BuildingConfig } from "~/data"
 import { MineConfig, buildingModels } from "~/data/buildings"
@@ -15,6 +16,7 @@ export class Mine extends Building<MineConfig> {
 
   /**
    * Creates a new instance of the Mine class.
+   * @param player The player who owns the mine.
    * @param continent The continent where the mine is located.
    * @param config Configuration of the mine building.
    * @param game The game instance.
@@ -60,15 +62,21 @@ export class Mine extends Building<MineConfig> {
     // Calculate the time passed since the last stone production in seconds
     const timePassedInSeconds = (currentTime - this.lastStoneProductionTime) / 1000
 
-    // Check if at least 30 seconds have passed since the last stone production
+    // Check if at least 1 second has passed since the last stone production
     if (timePassedInSeconds >= 1) {
-      // Add the produced stone to the continent's resources
-      this.player.state.resources.stone += this.buildingModel.production.rate
-      // Log the production of stone
-      // console.log(`+${stoneProduced} stone produced`)
-      // document.dispatchEvent(Mine.stoneGeneratedEvent)
+      // Calculate the amount of stone produced based on the production rate
+      const stoneProduced = this.buildingModel.production.rate
+      // Add the produced stone to the player's resources
+      this.player.state.resources.stone += stoneProduced
       // Update the timestamp of the last stone production
       this.lastStoneProductionTime = currentTime
+
+      // Log the production of stone
+      console.log(`+${stoneProduced} stone produced`)
+      // Log the new player stone resource amount
+      console.log(`Player stone resources: ${this.player.state.resources.stone}`)
+      // Dispatch an event indicating that stone has been generated (optional)
+      // document.dispatchEvent(this.stoneGeneratedEvent);
     }
   }
 }
