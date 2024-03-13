@@ -6,7 +6,7 @@ import { Grid } from "./grid"
 import { Player } from "./player"
 import { Continent } from "./units/continent"
 import { GameGUI } from "./gui/gui"
-import { Rocket } from "./units/buildings/rocket"
+import { Rocket } from "./units/rocket"
 
 export class Game {
   canvas: HTMLCanvasElement

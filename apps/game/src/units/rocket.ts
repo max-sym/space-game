@@ -1,5 +1,5 @@
 import { B } from "~/b"
-import { Unit } from "../unit"
+import { Unit } from "./unit"
 import { RocketConfig } from "~/data"
 import { Game } from "~/index"
 
