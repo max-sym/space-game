@@ -37,7 +37,7 @@ export class Continent extends Unit {
 
     // Set material properties for the continent model
     const material = new B.StandardMaterial("continent", this.game.scene)
-    material.diffuseColor = B.Color3.FromHexString("#00ff00")
+    material.diffuseColor = B.Color3.FromHexString(this.config.color)
     material.alpha = 1
     this.model.material = material
 
