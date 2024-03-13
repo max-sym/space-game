@@ -6,6 +6,7 @@ import { Grid } from "./grid"
 import { Player } from "./player"
 import { Continent } from "./units/continent"
 import { GameGUI } from "./gui/gui"
+import { Rocket } from "./units/buildings/rocket"
 
 export class Game {
   canvas: HTMLCanvasElement
@@ -33,11 +34,18 @@ export class Game {
     })
   }
 
+  populateRockets = () => {
+    this.config.rockets.forEach((rocketConfig) => {
+      this.units.push(new Rocket({ game: this, config: rocketConfig }))
+    })
+  }
+
   init = () => {
     this.createPlayers()
     this.populatePlanets()
     this.populateContinents()
     this.populateBuildings()
+    this.populateRockets()
     this.initCamera()
     this.initEnv()
     this.engine.runRenderLoop(() => {

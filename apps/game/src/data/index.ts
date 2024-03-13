@@ -58,12 +58,26 @@ export type PlayerConfig = {
   state: PlayerState
 }
 
+export type RocketConfig = {
+  id: number
+  name: string
+  color: string
+  position: B.Vector3
+  dimentions: {
+    width: number
+    height: number
+    length: number
+  }
+  mass: number
+}
+
 export type GameConfig = {
   planets: PlanetConfig[]
   showGrid: boolean
   players: PlayerConfig[]
   continents: ContinentConfig[]
   buildings: BuildingConfig[]
+  rockets: RocketConfig[]
   camera: {
     position: B.Vector3
     target: B.Vector3
@@ -174,6 +188,20 @@ export const data: GameConfig = {
       diameter: 50,
       position: new B.Vector3(1000, 0, 0),
       color: "#331100",
+    },
+  ],
+  rockets: [
+    {
+      id: 1,
+      name: "Rocket 1",
+      color: "#550000",
+      dimentions: {
+        height: 1,
+        length: 1,
+        width: 1,
+      },
+      mass: 1,
+      position: new B.Vector3(700, 0, -70),
     },
   ],
 }
