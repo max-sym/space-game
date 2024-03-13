@@ -16,6 +16,7 @@ export class Game {
   units: Unit[] = []
   players: Player[] = []
   gui: GameGUI
+  frame = 0
 
   constructor({ canvas }: { canvas: HTMLCanvasElement }) {
     this.canvas = canvas
@@ -52,6 +53,7 @@ export class Game {
     this.players.forEach((player) => {
       player.update()
     })
+    this.gui.updateHeader()
   }
 
   initCamera = () => {

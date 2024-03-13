@@ -19,6 +19,7 @@ export class GameGUI {
   cursorMode: CursorMode = "select"
   header: GUI.TextBlock | null = null
   player: Player
+  elements: GUI.Control[] = []
 
   constructor({ game }: { game: Game }) {
     this.game = game
@@ -27,6 +28,9 @@ export class GameGUI {
     const advancedTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI")
     const rootPanel = new GUI.StackPanel()
     rootPanel.width = "100%"
+    rootPanel.height = "50px"
+    rootPanel.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_CENTER
+    rootPanel.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM
     advancedTexture.addControl(rootPanel)
 
     this.populateHeader(rootPanel)
@@ -34,11 +38,14 @@ export class GameGUI {
     const panel = new GUI.StackPanel()
     panel.width = "220px"
     panel.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT
-    rootPanel.addControl(panel)
+    advancedTexture.addControl(panel)
     this.panel = panel
 
     this.populateButtons()
     this.registerEvents()
+
+    // Set initial cursor mode to "select" and update button colors
+    this.setCursorMode("select")
   }
 
   updateHeader() {
@@ -62,7 +69,7 @@ export class GameGUI {
       if (pickResult.hit) {
         const pickedPoint = pickResult.pickedPoint
 
-        if (this.cursorMode === "select" && pickedPoint) {
+        if (pickedPoint) {
           const continent = game.units.find((c) => c.type === "continent")
 
           if (!continent?.model) return
@@ -77,17 +84,23 @@ export class GameGUI {
           const config: BuildingConfig = {
             id: game.units.length,
             continentId: continent.config.id,
-            name: "Power Plant",
             playerId: game.players[0].config.id,
-            type: "power-station",
             position: new B.Vector2(localPoint.x, localPoint.y),
           }
 
-          const newBuilding = new PowerStation({
-            game: this.game,
-            config,
-          })
-          this.game.units.push(newBuilding)
+          if (this.cursorMode === "power-plant") {
+            const newBuilding = new PowerStation({
+              game: this.game,
+              config: { ...config, name: "Power Plant", type: "power-station" },
+            })
+            this.game.units.push(newBuilding)
+          } else if (this.cursorMode === "mine") {
+            const newBuilding = new Mine({
+              game: this.game,
+              config: { ...config, name: "Mine", type: "mine" },
+            })
+            this.game.units.push(newBuilding)
+          }
         }
       }
     })
@@ -95,35 +108,38 @@ export class GameGUI {
 
   populateButtons = () => {
     buttons.forEach((button) => {
-      const buttonControl = GUI.Button.CreateSimpleButton("but", button.name)
+      const buttonControl: GUI.Control = GUI.Button.CreateSimpleButton(
+        "mode" + button.mode,
+        button.name
+      )
       buttonControl.height = "40px"
       buttonControl.color = "white"
-      buttonControl.background = "green"
-      this.panel.addControl(buttonControl)
       buttonControl.onPointerUpObservable.add(() => {
-        this.cursorMode = button.mode
+        this.setCursorMode(button.mode)
       })
+      this.panel.addControl(buttonControl)
+      this.elements.push(buttonControl)
     })
+  }
+
+  setCursorMode(mode: CursorMode) {
+    this.cursorMode = mode
+    // Update button colors based on the cursor mode
+    this.elements.forEach((buttonControl) => {
+      buttonControl.background = buttonControl.name === "mode" + mode ? "blue" : "red"
+    })
+  }
+
+  update() {
+    if (this.game.frame % 60 === 0) this.updateHeader()
   }
 
   populateHeader(rootPanel: GUI.StackPanel) {
     this.header = new GUI.TextBlock("header")
     this.header.color = "white"
-    this.header.fontSize = 24
+    this.header.fontSize = 16
     this.header.paddingTop = "10px"
     this.header.paddingBottom = "10px"
     rootPanel.addControl(this.header)
-
-    // Add an update button
-    const updateButton = GUI.Button.CreateSimpleButton("updateButton", "Update")
-    updateButton.height = "40px"
-    updateButton.color = "white"
-    updateButton.background = "blue"
-    rootPanel.addControl(updateButton)
-
-    // Register event handler for the update button
-    updateButton.onPointerUpObservable.add(() => {
-      this.updateHeader()
-    })
   }
 }

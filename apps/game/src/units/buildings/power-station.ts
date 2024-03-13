@@ -70,7 +70,7 @@ export class PowerStation extends Building<PowerStationConfig> {
       this.lastEnergyProductionTime = currentTime
 
       // Log the production of stone (optional)
-      console.log(`+${energyProduced} energy produced`)
+      //console.log(`+${energyProduced} energy produced`)
       // Dispatch an event indicating that stone has been generated (optional)
       // document.dispatchEvent(this.stoneGeneratedEvent);
     }

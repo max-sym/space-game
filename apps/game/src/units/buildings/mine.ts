@@ -72,9 +72,9 @@ export class Mine extends Building<MineConfig> {
       this.lastStoneProductionTime = currentTime
 
       // Log the production of stone
-      console.log(`+${stoneProduced} stone produced`)
+      //console.log(`+${stoneProduced} stone produced`)
       // Log the new player stone resource amount
-      console.log(`Player stone resources: ${this.player.state.resources.stone}`)
+      //console.log(`Player stone resources: ${this.player.state.resources.stone}`)
       // Dispatch an event indicating that stone has been generated (optional)
       // document.dispatchEvent(this.stoneGeneratedEvent);
     }
