@@ -109,7 +109,7 @@ export class GameGUI {
   populateButtons = () => {
     buttons.forEach((button) => {
       const buttonControl: GUI.Control = GUI.Button.CreateSimpleButton(
-        "mode" + button.mode,
+        "mode-" + button.mode,
         button.name
       )
       buttonControl.height = "40px"
@@ -126,7 +126,7 @@ export class GameGUI {
     this.cursorMode = mode
     // Update button colors based on the cursor mode
     this.elements.forEach((buttonControl) => {
-      buttonControl.background = buttonControl.name === "mode" + mode ? "blue" : "red"
+      buttonControl.background = buttonControl.name === "mode-" + mode ? "blue" : "red"
     })
   }
 

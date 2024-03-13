@@ -47,13 +47,14 @@ export class Game {
   }
 
   update = () => {
+    this.frame++
     this.units.forEach((unit) => {
       unit.update()
     })
     this.players.forEach((player) => {
       player.update()
     })
-    this.gui.updateHeader()
+    this.gui.update()
   }
 
   initCamera = () => {
