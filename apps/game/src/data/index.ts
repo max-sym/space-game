@@ -196,9 +196,9 @@ export const data: GameConfig = {
       name: "Rocket 1",
       color: "#550000",
       dimentions: {
-        height: 1,
+        height: 0.3,
         length: 1,
-        width: 1,
+        width: 0.3,
       },
       mass: 1,
       position: new B.Vector3(700, 0, -70),
