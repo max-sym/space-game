@@ -40,6 +40,7 @@ export type PlanetConfig = {
   diameter: number
   position: B.Vector3
   color: string
+  mass: number
 }
 
 export type PlayerState = {
@@ -180,6 +181,7 @@ export const data: GameConfig = {
       id: 1,
       name: "earth",
       diameter: 100,
+      mass: 1000000,
       position: new B.Vector3(700, 0, 0),
       color: "#004477",
     },
@@ -187,6 +189,7 @@ export const data: GameConfig = {
       id: 2,
       name: "mars",
       diameter: 50,
+      mass: 500000,
       position: new B.Vector3(1000, 0, 0),
       color: "#331100",
     },
