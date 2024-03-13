@@ -63,6 +63,7 @@ export type RocketConfig = {
   name: string
   color: string
   position: B.Vector3
+  rotation: B.Vector3
   dimentions: {
     width: number
     height: number
@@ -202,6 +203,7 @@ export const data: GameConfig = {
       },
       mass: 1,
       position: new B.Vector3(700, 0, -70),
+      rotation: new B.Vector3(0, 90, 0),
     },
   ],
 }

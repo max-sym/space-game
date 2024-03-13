@@ -10,6 +10,7 @@ export class Rocket extends Unit {
     super({ game })
     this.config = config
     this.position = this.config.position.clone()
+    this.rotation = this.config.rotation.clone()
 
     this.model = B.CreateBox(
       this.config.name,
