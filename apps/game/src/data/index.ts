@@ -65,6 +65,10 @@ export type RocketConfig = {
   color: string
   position: B.Vector3
   rotation: B.Vector3
+  state: {
+    velocity: B.Vector3
+    speed: number
+  }
   dimentions: {
     width: number
     height: number
@@ -199,6 +203,10 @@ export const data: GameConfig = {
       id: 1,
       name: "Rocket 1",
       color: "#550000",
+      state: {
+        velocity: new B.Vector3(0, 1, 0),
+        speed: 0.03,
+      },
       dimentions: {
         height: 0.3,
         length: 1,
