@@ -18,6 +18,9 @@ export class Game {
   players: Player[] = []
   gui: GameGUI
   frame = 0
+  delta = 0
+
+  inputMap: Record<string, boolean> = {}
 
   constructor({ canvas }: { canvas: HTMLCanvasElement }) {
     this.canvas = canvas
@@ -26,6 +29,27 @@ export class Game {
 
     this.init()
     this.gui = new GameGUI({ game: this })
+    this.registerEvents()
+  }
+
+  registerEvents = () => {
+    // in babylon js version
+    // Assuming you have a Babylon.js scene set up as `scene`
+    this.scene.actionManager = new B.ActionManager(this.scene)
+
+    const g = this
+
+    this.scene.actionManager.registerAction(
+      new B.ExecuteCodeAction(B.ActionManager.OnKeyDownTrigger, function (evt) {
+        g.inputMap[evt.sourceEvent.key] = evt.sourceEvent.type == "keydown"
+      })
+    )
+
+    this.scene.actionManager.registerAction(
+      new B.ExecuteCodeAction(B.ActionManager.OnKeyUpTrigger, function (evt) {
+        g.inputMap[evt.sourceEvent.key] = evt.sourceEvent.type == "keydown"
+      })
+    )
   }
 
   createPlayers = () => {
@@ -56,6 +80,7 @@ export class Game {
 
   update = () => {
     this.frame++
+    this.delta = this.engine.getDeltaTime() / 1000
     this.units.forEach((unit) => {
       unit.update()
     })

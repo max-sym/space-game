@@ -67,7 +67,6 @@ export type RocketConfig = {
   rotation: B.Vector3
   state: {
     velocity: B.Vector3
-    speed: number
   }
   dimentions: {
     width: number
@@ -89,6 +88,8 @@ export type GameConfig = {
     target: B.Vector3
   }
 }
+
+export const scale = 0.00001
 
 export const data: GameConfig = {
   camera: {
@@ -184,17 +185,17 @@ export const data: GameConfig = {
     {
       id: 1,
       name: "earth",
-      diameter: 100,
-      mass: 1000000,
+      diameter: 12742000 * scale,
+      mass: 5.972e24,
       position: new B.Vector3(700, 0, 0),
       color: "#004477",
     },
     {
       id: 2,
       name: "mars",
-      diameter: 50,
-      mass: 500000,
-      position: new B.Vector3(1000, 0, 0),
+      diameter: 6779000 * scale,
+      mass: 6.39e23,
+      position: new B.Vector3(2000, 0, 0),
       color: "#331100",
     },
   ],
@@ -204,8 +205,7 @@ export const data: GameConfig = {
       name: "Rocket 1",
       color: "#550000",
       state: {
-        velocity: new B.Vector3(0, 1, 0),
-        speed: 0.04,
+        velocity: new B.Vector3(0, 56400 * scale, 0),
       },
       dimentions: {
         height: 0.3 * 5,
@@ -213,7 +213,7 @@ export const data: GameConfig = {
         width: 0.3 * 5,
       },
       mass: 1,
-      position: new B.Vector3(700, 0, -60),
+      position: new B.Vector3(700, 0, -80),
       rotation: new B.Vector3(0, 90, 0),
     },
   ],

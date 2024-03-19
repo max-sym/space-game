@@ -1,17 +1,14 @@
 import { B } from "~/b"
 import { Unit } from "./unit"
-import { RocketConfig } from "~/data"
+import { RocketConfig, scale } from "~/data"
 import { Game } from "~/index"
+import { Planet } from "./planet"
 
-const calculateGravityForce = (
-  rocketMass: number,
-  planetMass: number,
-  distance: number
-) => {
-  const exp = -6
-  const G = 6.674 * Math.pow(10, exp)
-  const force = (G * rocketMass * planetMass) / Math.pow(distance, 2)
-  return force
+const G = 6.6743e-11 // Universal gravitational constant in m^3 kg^-1 s^-2
+
+// Function to calculate gravitational force
+const calculateGravityForce = (m1: number, m2: number, r: number) => {
+  return (G * (m1 * m2)) / r ** 2
 }
 
 export class Orbit extends Unit {
@@ -22,8 +19,12 @@ export class Orbit extends Unit {
     this.points = points
     this.model = B.CreateLines("orbit", { points: this.points }, this.game.scene)
   }
+
   addPoint(point: B.Vector3) {
     this.points.push(point)
+    if (this.points.length > 100) {
+      this.points.shift()
+    }
     this.model = B.CreateLines("orbit", { points: this.points }, this.game.scene)
   }
 }
@@ -57,31 +58,55 @@ export class Rocket extends Unit {
     this.orbit = new Orbit({ game, points: [this.position] })
   }
 
-  gravitateToPlanet() {
-    const planet = this.game.units.find((u) => u.type === "planet")
-    if (!planet) return
-    const distanceToPlanet = B.Vector3.Distance(planet.position, this.position)
-    this.gravityForce =
-      calculateGravityForce(this.config.mass, planet.config.mass, distanceToPlanet) * 1.3
+  onKeydown() {
+    if (this.game.inputMap["w"] || this.game.inputMap["W"]) {
+      this.config.state.velocity.scaleInPlace(1.01)
+      console.log("fast")
+    }
+    if (this.game.inputMap["s"] || this.game.inputMap["S"]) {
+      this.config.state.velocity.scaleInPlace(0.99)
+      console.log("slow")
+    }
+  }
+
+  gravitateToPlanet(planet: Planet) {
+    const distanceToPlanet = B.Vector3.Distance(planet.position, this.position) / scale // 50km
+    this.gravityForce = calculateGravityForce(
+      this.config.mass,
+      planet.config.mass,
+      distanceToPlanet
+    )
+
     const gravityDirection = planet.position.subtract(this.position).normalize()
-    this.config.state.velocity
-      .addInPlace(gravityDirection.scale(this.gravityForce * 0.8))
-      .normalize()
+    const forceVector = gravityDirection.scale(this.gravityForce * scale)
+    this.config.state.velocity.addInPlace(forceVector)
   }
 
   move() {
     this.position = this.position.add(
-      this.config.state.velocity
-        .clone()
-        .scale((this.config.state.speed + this.gravityForce * 4) * 2.5)
+      this.config.state.velocity.clone().scale(this.game.delta)
     )
   }
+
+  gravitateToPlanets() {
+    for (let i = 0; i < this.game.units.length; i++) {
+      if (this.game.units[i].type === "planet") {
+        this.gravitateToPlanet(this.game.units[i])
+      }
+    }
+  }
+
   update() {
-    super.update()
+    for (let i = 0; i < 150; i++) {
+      super.update()
+      this.gravitateToPlanets()
+      this.move()
+    }
+
+    this.onKeydown()
+
     if (this.game.frame % 30 === 0) {
       this.orbit.addPoint(this.position)
     }
-    this.gravitateToPlanet()
-    this.move()
   }
 }
