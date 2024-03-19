@@ -2,13 +2,14 @@ import { B } from "~/b"
 import { PowerStation } from "../units/buildings/power-station"
 import { Mine } from "../units/buildings/mine"
 import { BuildingType } from "./buildings"
+import { RocketLaunchingSite } from "../units/buildings/rocketLaunchingSite"
 
 export type UnitType = "building" | "continent" | "planet"
 
 export const buildingClasses: Record<BuildingType, any> = {
   "power-station": PowerStation,
   mine: Mine,
-  "rocket-launching-site": PowerStation,
+  "rocket-launching-site": RocketLaunchingSite,
 }
 
 export type BuildingConfig = {
@@ -169,7 +170,7 @@ export const data: GameConfig = {
       playerId: 1,
       continentId: 1,
       name: "Rocket Launching Site",
-      position: new B.Vector2(6, 10),
+      position: new B.Vector2(4, 10),
       type: "rocket-launching-site",
     },
     {

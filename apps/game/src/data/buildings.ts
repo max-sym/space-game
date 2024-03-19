@@ -58,8 +58,8 @@ export const buildingModels: Record<BuildingType, SpecificBuildingConfig> = {
     model: {
       width: 1,
       length: 1,
-      height: 1,
-      color: "#008800",
+      height: 0.5,
+      color: "#105090",
     },
   },
 }

@@ -80,7 +80,8 @@ export class Game {
 
   update = () => {
     this.frame++
-    this.delta = this.engine.getDeltaTime() / 1000
+    // this.delta = this.engine.getDeltaTime() / 1000
+    this.delta = 1 / 60
     this.units.forEach((unit) => {
       unit.update()
     })
