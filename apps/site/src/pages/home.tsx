@@ -1,4 +1,5 @@
-import { Game } from "@space-game/game"
+// import { Game } from "@space-game/game"
+import { Game } from "./rocket-test"
 import { useEffect, useRef } from "react"
 
 export const Home = () => {
