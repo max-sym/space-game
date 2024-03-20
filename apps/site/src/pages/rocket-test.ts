@@ -1,3 +1,6 @@
+const degreesToRadians = (degrees: number) => (degrees * Math.PI) / 180
+const radiansToDegrees = (radians: number) => (radians * 180) / Math.PI
+
 type Vector = {
   x: number
   y: number
@@ -5,6 +8,10 @@ type Vector = {
 
 type UnitConfig = {
   position: Vector
+  /**
+   * Rotation in degrees
+   */
+  rotation: number
   width: number
   height: number
   color: string
@@ -16,6 +23,7 @@ type ContinentConfig = UnitConfig
 
 class Unit {
   position: Vector
+  rotation: number
   width: number
   height: number
   color: string
@@ -23,15 +31,29 @@ class Unit {
 
   constructor(config: UnitConfig, game: Game) {
     this.position = config.position
+    this.rotation = config.rotation
     this.height = config.height
     this.width = config.width
     this.color = config.color
     this.game = game
   }
 
-  update() {
+  draw() {
     this.game.ctx.fillStyle = this.color
-    this.game.ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
+    this.game.ctx.fillRect(-this.width / 2, -this.height / 2, this.width, this.height)
+  }
+
+  update() {
+    this.game.ctx.translate(
+      this.position.x + this.width / 2,
+      this.position.y + this.height / 2
+    )
+
+    this.game.ctx.rotate(degreesToRadians(this.rotation))
+
+    this.draw()
+
+    this.game.ctx.setTransform(1, 0, 0, 1, 0, 0)
   }
 }
 
@@ -45,20 +67,15 @@ class Rocket extends Unit {
 
   drawCircle() {
     this.game.ctx.beginPath()
-    this.game.ctx.arc(
-      this.position.x + this.width / 2,
-      this.position.y,
-      this.width / 2,
-      0,
-      Math.PI * 2
-    )
+    this.game.ctx.arc(0, -this.height / 2, this.width / 2, 0, Math.PI * 2)
     this.game.ctx.closePath()
     this.game.ctx.fill()
   }
 
   applyGravity() {
     if (!this.stopped) {
-      this.position.y += this.gravity
+      this.position.y += this.gravity * Math.cos(degreesToRadians(this.rotation))
+      this.position.x += this.gravity * Math.sin(-degreesToRadians(this.rotation))
     }
   }
 
@@ -73,9 +90,14 @@ class Rocket extends Unit {
     }
   }
 
+  draw() {
+    super.draw()
+    this.drawCircle()
+  }
+
   update() {
     super.update()
-    this.drawCircle()
+
     this.applyGravity()
 
     this.game.units
@@ -101,6 +123,7 @@ const data: DataType = {
   rockets: [
     {
       position: { x: 450, y: 200 },
+      rotation: 27,
       width: 30,
       height: 150,
       color: "#fb0",
@@ -109,6 +132,7 @@ const data: DataType = {
   continents: [
     {
       position: { x: 240, y: 500 },
+      rotation: 27,
       width: 500,
       height: 100,
       color: "#3f3",
