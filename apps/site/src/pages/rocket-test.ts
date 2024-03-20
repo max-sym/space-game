@@ -37,6 +37,7 @@ class Unit {
 
 class Rocket extends Unit {
   gravity = 1
+  stopped = false
 
   constructor(config: RocketConfig, game: Game) {
     super(config, game)
@@ -56,13 +57,32 @@ class Rocket extends Unit {
   }
 
   applyGravity() {
-    this.position.y += this.gravity
+    if (!this.stopped) {
+      this.position.y += this.gravity
+    }
+  }
+
+  checkCollisionWithContinent(continent: Continent) {
+    if (
+      this.position.x < continent.position.x + continent.width &&
+      this.position.x + this.width > continent.position.x &&
+      this.position.y < continent.position.y + continent.height &&
+      this.position.y + this.height > continent.position.y
+    ) {
+      this.stopped = true
+    }
   }
 
   update() {
     super.update()
     this.drawCircle()
     this.applyGravity()
+
+    this.game.units
+      .filter((unit) => unit instanceof Continent)
+      .forEach((continent: Continent) => {
+        this.checkCollisionWithContinent(continent)
+      })
   }
 }
 
