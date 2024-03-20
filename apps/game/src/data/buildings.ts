@@ -56,8 +56,8 @@ export const buildingModels: Record<BuildingType, SpecificBuildingConfig> = {
   },
   "rocket-launching-site": {
     model: {
-      width: 1,
-      length: 1,
+      width: 5,
+      length: 5,
       height: 0.5,
       color: "#105090",
     },

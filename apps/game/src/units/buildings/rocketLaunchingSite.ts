@@ -1,9 +1,9 @@
-import { Continent } from "~/units/continent"
 import { BuildingConfig } from "~/data"
 import { RocketLaunchingSiteConfig, buildingModels } from "~/data/buildings"
 import { Game } from "../.."
 import { Building } from "./building"
-import { Player } from "~/player"
+import { Rocket } from "../rocket"
+import { B } from "~/b"
 
 /**
  * Represents a Mine building in the game.
@@ -17,17 +17,7 @@ export class RocketLaunchingSite extends Building<RocketLaunchingSiteConfig> {
    * @param config Configuration of the power-station building.
    * @param game The game instance.
    */
-  constructor({
-    player,
-    continent,
-    config,
-    game,
-  }: {
-    player: Player
-    continent: Continent
-    config: BuildingConfig
-    game: Game
-  }) {
+  constructor({ config, game }: { config: BuildingConfig; game: Game }) {
     // Call the constructor of the parent class (Building)
     super({
       config,
@@ -35,6 +25,27 @@ export class RocketLaunchingSite extends Building<RocketLaunchingSiteConfig> {
       // Use the mine building model
       buildingModel: buildingModels["rocket-launching-site"],
     })
+
+    const rocket = new Rocket({
+      config: {
+        id: 11,
+        position: this.position.clone(),
+        rotation: this.rotation.clone(),
+        color: "#110076",
+        name: "Rocket 1",
+        state: {
+          velocity: new B.Vector3(0, 0, 0),
+        },
+        dimentions: {
+          height: 0.3 * 5,
+          length: 1 * 5,
+          width: 0.3 * 5,
+        },
+        mass: 1,
+      },
+      game,
+    })
+    this.game.units.push(rocket)
   }
   update() {
     // Call the update method of the parent class (Building)

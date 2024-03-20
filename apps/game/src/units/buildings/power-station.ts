@@ -1,9 +1,7 @@
-import { Continent } from "~/units/continent"
 import { BuildingConfig } from "~/data"
 import { PowerStationConfig, buildingModels } from "~/data/buildings"
 import { Game } from "../.."
 import { Building } from "./building"
-import { Player } from "~/player"
 
 /**
  * Represents a Mine building in the game.
@@ -19,21 +17,9 @@ export class PowerStation extends Building<PowerStationConfig> {
    * @param config Configuration of the power-station building.
    * @param game The game instance.
    */
-  constructor({
-    player,
-    continent,
-    config,
-    game,
-  }: {
-    player: Player
-    continent: Continent
-    config: BuildingConfig
-    game: Game
-  }) {
+  constructor({ config, game }: { config: BuildingConfig; game: Game }) {
     // Call the constructor of the parent class (Building)
     super({
-      player,
-      continent,
       config,
       game,
       // Use the mine building model
