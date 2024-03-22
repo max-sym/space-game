@@ -57,9 +57,46 @@ class Unit {
   }
 }
 
+function intersect(x1, y1, x2, y2, x3, y3, x4, y4) {
+  // Check if none of the lines are of length 0
+  if ((x1 === x2 && y1 === y2) || (x3 === x4 && y3 === y4)) {
+    return false
+  }
+
+  const denominator = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1)
+
+  // Lines are parallel
+  if (denominator === 0) {
+    return false
+  }
+
+  let ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / denominator
+  let ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / denominator
+
+  // is the intersection along the segments
+  if (ua < 0 || ua > 1 || ub < 0 || ub > 1) {
+    return false
+  }
+
+  // Return a object with the x and y coordinates of the intersection
+  let x = x1 + ua * (x2 - x1)
+  let y = y1 + ua * (y2 - y1)
+
+  return { x, y }
+}
+
+type Line = {
+  pointA: Vector
+  pointB: Vector
+}
+
 class Rocket extends Unit {
   gravity = 1
   stopped = false
+  rocketBaseLine: Line = {
+    pointA: { x: 0, y: 0 },
+    pointB: { x: 0, y: 0 },
+  }
 
   constructor(config: RocketConfig, game: Game) {
     super(config, game)
@@ -74,20 +111,49 @@ class Rocket extends Unit {
 
   applyGravity() {
     if (!this.stopped) {
-      this.position.y += this.gravity * Math.cos(degreesToRadians(this.rotation))
-      this.position.x += this.gravity * Math.sin(-degreesToRadians(this.rotation))
+      const rotationInRadians = degreesToRadians(this.rotation)
+
+      const gravityY = this.gravity * Math.cos(rotationInRadians)
+      const gravityX = this.gravity * Math.sin(-rotationInRadians)
+
+      this.position.x += gravityX
+      this.position.y += gravityY
     }
   }
 
   checkCollisionWithContinent(continent: Continent) {
-    if (
-      this.position.x < continent.position.x + continent.width &&
-      this.position.x + this.width > continent.position.x &&
-      this.position.y < continent.position.y + continent.height &&
-      this.position.y + this.height > continent.position.y
-    ) {
-      this.stopped = true
+    const rotationInRadians = degreesToRadians(this.rotation)
+
+    this.rocketBaseLine = {
+      pointA: {
+        x: this.position.x,
+        y: this.position.y,
+      },
+      pointB: {
+        x: this.position.x + this.width * Math.cos(rotationInRadians),
+        y: this.position.y + this.width * Math.sin(rotationInRadians),
+      },
     }
+
+    // if (intersect(rocketBaseLine.x1, rocketBaseLine.y2, rocketBaseLine.x2)) {
+    //   this.stopped = true
+    // }
+  }
+
+  drawLines() {
+    this.game.ctx.fillStyle = "#ff0000"
+    this.game.ctx.fillRect(
+      this.rocketBaseLine.pointA.x,
+      this.rocketBaseLine.pointA.y,
+      2,
+      2
+    )
+    this.game.ctx.fillRect(
+      this.rocketBaseLine.pointB.x,
+      this.rocketBaseLine.pointB.y,
+      2,
+      2
+    )
   }
 
   draw() {
@@ -98,6 +164,7 @@ class Rocket extends Unit {
   update() {
     super.update()
 
+    this.drawLines()
     this.applyGravity()
 
     this.game.units
@@ -123,7 +190,7 @@ const data: DataType = {
   rockets: [
     {
       position: { x: 450, y: 200 },
-      rotation: 27,
+      rotation: 5,
       width: 30,
       height: 150,
       color: "#fb0",
@@ -131,8 +198,8 @@ const data: DataType = {
   ],
   continents: [
     {
-      position: { x: 240, y: 500 },
-      rotation: 27,
+      position: { x: 240, y: 400 },
+      rotation: 125,
       width: 500,
       height: 100,
       color: "#3f3",
