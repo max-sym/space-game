@@ -28,6 +28,12 @@ class Unit {
   height: number
   color: string
   game: Game
+  bounds: Bounds = {
+    pointA: { x: 0, y: 0 },
+    pointB: { x: 0, y: 0 },
+    pointC: { x: 0, y: 0 },
+    pointD: { x: 0, y: 0 },
+  }
 
   constructor(config: UnitConfig, game: Game) {
     this.position = config.position
@@ -43,17 +49,52 @@ class Unit {
     this.game.ctx.fillRect(-this.width / 2, -this.height / 2, this.width, this.height)
   }
 
+  defineBounds() {
+    const rotationInRadians = degreesToRadians(this.rotation)
+    const halfWidth = this.width / 2
+    const halfHeight = this.height / 2
+    const cosRotation = Math.cos(rotationInRadians)
+    const sinRotation = Math.sin(rotationInRadians)
+
+    this.bounds = {
+      pointA: {
+        x: this.position.x - halfWidth * cosRotation + halfHeight * sinRotation,
+        y: this.position.y - halfWidth * sinRotation - halfHeight * cosRotation,
+      },
+      pointB: {
+        x: this.position.x + halfWidth * cosRotation + halfHeight * sinRotation,
+        y: this.position.y + halfWidth * sinRotation - halfHeight * cosRotation,
+      },
+      pointC: {
+        x: this.position.x - halfWidth * cosRotation - halfHeight * sinRotation,
+        y: this.position.y - halfWidth * sinRotation + halfHeight * cosRotation,
+      },
+      pointD: {
+        x: this.position.x + halfWidth * cosRotation - halfHeight * sinRotation,
+        y: this.position.y + halfWidth * sinRotation + halfHeight * cosRotation,
+      },
+    }
+  }
+
+  drawBounds() {
+    this.game.ctx.fillStyle = "#ff0000"
+    this.game.ctx.fillRect(this.bounds.pointA.x - 1, this.bounds.pointA.y - 1, 2, 2)
+    this.game.ctx.fillRect(this.bounds.pointB.x - 1, this.bounds.pointB.y - 1, 2, 2)
+    this.game.ctx.fillRect(this.bounds.pointC.x - 1, this.bounds.pointC.y - 1, 2, 2)
+    this.game.ctx.fillRect(this.bounds.pointD.x - 1, this.bounds.pointD.y - 1, 2, 2)
+  }
+
   update() {
-    this.game.ctx.translate(
-      this.position.x + this.width / 2,
-      this.position.y + this.height / 2
-    )
+    this.game.ctx.translate(this.position.x, this.position.y)
 
     this.game.ctx.rotate(degreesToRadians(this.rotation))
 
     this.draw()
 
     this.game.ctx.setTransform(1, 0, 0, 1, 0, 0)
+
+    this.defineBounds()
+    this.drawBounds()
   }
 }
 
@@ -85,18 +126,16 @@ function intersect(x1, y1, x2, y2, x3, y3, x4, y4) {
   return { x, y }
 }
 
-type Line = {
+type Bounds = {
   pointA: Vector
   pointB: Vector
+  pointC: Vector
+  pointD: Vector
 }
 
 class Rocket extends Unit {
   gravity = 1
-  stopped = false
-  rocketBaseLine: Line = {
-    pointA: { x: 0, y: 0 },
-    pointB: { x: 0, y: 0 },
-  }
+  stopped = true
 
   constructor(config: RocketConfig, game: Game) {
     super(config, game)
@@ -122,38 +161,9 @@ class Rocket extends Unit {
   }
 
   checkCollisionWithContinent(continent: Continent) {
-    const rotationInRadians = degreesToRadians(this.rotation)
-
-    this.rocketBaseLine = {
-      pointA: {
-        x: this.position.x,
-        y: this.position.y,
-      },
-      pointB: {
-        x: this.position.x + this.width * Math.cos(rotationInRadians),
-        y: this.position.y + this.width * Math.sin(rotationInRadians),
-      },
-    }
-
     // if (intersect(rocketBaseLine.x1, rocketBaseLine.y2, rocketBaseLine.x2)) {
     //   this.stopped = true
     // }
-  }
-
-  drawLines() {
-    this.game.ctx.fillStyle = "#ff0000"
-    this.game.ctx.fillRect(
-      this.rocketBaseLine.pointA.x,
-      this.rocketBaseLine.pointA.y,
-      2,
-      2
-    )
-    this.game.ctx.fillRect(
-      this.rocketBaseLine.pointB.x,
-      this.rocketBaseLine.pointB.y,
-      2,
-      2
-    )
   }
 
   draw() {
@@ -164,8 +174,8 @@ class Rocket extends Unit {
   update() {
     super.update()
 
-    this.drawLines()
     this.applyGravity()
+    this.rotation += 0.1
 
     this.game.units
       .filter((unit) => unit instanceof Continent)
@@ -190,7 +200,7 @@ const data: DataType = {
   rockets: [
     {
       position: { x: 450, y: 200 },
-      rotation: 5,
+      rotation: 10,
       width: 30,
       height: 150,
       color: "#fb0",
