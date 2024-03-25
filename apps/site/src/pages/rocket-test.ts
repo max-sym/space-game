@@ -135,7 +135,7 @@ type Bounds = {
 
 class Rocket extends Unit {
   gravity = 1
-  stopped = true
+  stopped = false
 
   constructor(config: RocketConfig, game: Game) {
     super(config, game)
@@ -161,10 +161,108 @@ class Rocket extends Unit {
   }
 
   checkCollisionWithContinent(continent: Continent) {
-    // if (intersect(rocketBaseLine.x1, rocketBaseLine.y2, rocketBaseLine.x2)) {
-    //   this.stopped = true
-    // }
+    if (!this.stopped) {
+      const rocketEdges = [
+        [this.bounds.pointA, this.bounds.pointB],
+        [this.bounds.pointB, this.bounds.pointC],
+        [this.bounds.pointC, this.bounds.pointD],
+        [this.bounds.pointD, this.bounds.pointA],
+      ]
+
+      const continentEdges = [
+        [continent.bounds.pointA, continent.bounds.pointB],
+        [continent.bounds.pointB, continent.bounds.pointC],
+        [continent.bounds.pointC, continent.bounds.pointD],
+        [continent.bounds.pointD, continent.bounds.pointA],
+      ]
+
+      let hasCollision = false
+
+      for (let i = 0; i < rocketEdges.length; i++) {
+        const rocketEdge = rocketEdges[i]
+
+        for (let j = 0; j < continentEdges.length; j++) {
+          const continentEdge = continentEdges[j]
+
+          if (
+            intersect(
+              rocketEdge[0].x,
+              rocketEdge[0].y,
+              rocketEdge[1].x,
+              rocketEdge[1].y,
+              continentEdge[0].x,
+              continentEdge[0].y,
+              continentEdge[1].x,
+              continentEdge[1].y
+            )
+          ) {
+            hasCollision = true
+            break
+          }
+        }
+
+        if (hasCollision) {
+          break
+        }
+      }
+
+      if (hasCollision) {
+        this.stopped = true
+      }
+    }
   }
+  // checkCollisionWithContinent(continent: Continent) {
+  //   if (!this.stopped) {
+  //     const rocketEdges = [
+  //       [this.bounds.pointA, this.bounds.pointB],
+  //       [this.bounds.pointB, this.bounds.pointC],
+  //       [this.bounds.pointC, this.bounds.pointD],
+  //       [this.bounds.pointD, this.bounds.pointA],
+  //     ]
+
+  //     const continentEdges = [
+  //       [continent.bounds.pointA, continent.bounds.pointB],
+  //       [continent.bounds.pointB, continent.bounds.pointC],
+  //       [continent.bounds.pointC, continent.bounds.pointD],
+  //       [continent.bounds.pointD, continent.bounds.pointA],
+  //     ]
+
+  //     let hasCollision = false
+
+  //     for (let i = 0; i < rocketEdges.length; i++) {
+  //       const rocketEdge = rocketEdges[i]
+
+  //       for (let j = 0; j < continentEdges.length; j++) {
+  //         const continentEdge = continentEdges[j]
+
+  //         if (
+  //           intersect(
+  //             rocketEdge[0].x,
+  //             rocketEdge[0].y,
+  //             rocketEdge[1].x,
+  //             rocketEdge[1].y,
+  //             continentEdge[0].x,
+  //             continentEdge[0].y,
+  //             continentEdge[1].x,
+  //             continentEdge[1].y
+  //           )
+  //         ) {
+  //           hasCollision = true
+  //           break
+  //         }
+  //       }
+
+  //       if (hasCollision) {
+  //         break
+  //       }
+  //     }
+
+  //     if (hasCollision) {
+  //       this.stopped = true
+  //       this.rotation = 0
+  //     }
+  //   }
+  // }
 
   draw() {
     super.draw()
@@ -175,7 +273,6 @@ class Rocket extends Unit {
     super.update()
 
     this.applyGravity()
-    this.rotation += 0.1
 
     this.game.units
       .filter((unit) => unit instanceof Continent)
@@ -200,7 +297,7 @@ const data: DataType = {
   rockets: [
     {
       position: { x: 450, y: 200 },
-      rotation: 10,
+      rotation: 50,
       width: 30,
       height: 150,
       color: "#fb0",
@@ -208,8 +305,8 @@ const data: DataType = {
   ],
   continents: [
     {
-      position: { x: 240, y: 400 },
-      rotation: 125,
+      position: { x: 260, y: 400 },
+      rotation: 55,
       width: 500,
       height: 100,
       color: "#3f3",
