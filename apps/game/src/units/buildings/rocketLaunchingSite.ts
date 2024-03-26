@@ -33,6 +33,7 @@ export class RocketLaunchingSite extends Building<RocketLaunchingSiteConfig> {
         rotation: this.rotation.clone(),
         color: "#110076",
         name: "Rocket 1",
+        controlable: true,
         state: {
           velocity: new B.Vector3(0, 0, 0),
         },
@@ -45,29 +46,6 @@ export class RocketLaunchingSite extends Building<RocketLaunchingSiteConfig> {
       },
       game,
     })
-
-    rocket.onKeydown = () => {
-      const velocityChange = 0.01
-      const horizontalVelocity = 0.1
-
-      if (this.game.inputMap["w"] || this.game.inputMap["W"]) {
-        rocket.config.state.velocity.y += velocityChange
-        console.log("Increase velocity")
-        rocket.disableGravity = true
-      }
-      if (this.game.inputMap["s"] || this.game.inputMap["S"]) {
-        rocket.config.state.velocity.y -= velocityChange
-        console.log("Decrease velocity")
-      }
-      if (this.game.inputMap["a"] || this.game.inputMap["A"]) {
-        console.log("Strafe left")
-        rocket.position.x -= horizontalVelocity
-      }
-      if (this.game.inputMap["d"] || this.game.inputMap["D"]) {
-        console.log("Strafe right")
-        rocket.position.x += horizontalVelocity
-      }
-    }
 
     this.game.units.push(rocket)
 

@@ -66,6 +66,7 @@ export type RocketConfig = {
   color: string
   position: B.Vector3
   rotation: B.Vector3
+  controlable?: boolean
   state: {
     velocity: B.Vector3
   }

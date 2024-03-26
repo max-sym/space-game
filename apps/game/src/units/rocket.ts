@@ -61,13 +61,38 @@ export class Rocket extends Unit {
   }
 
   onKeydown() {
+    if (!this.config.controlable) return
+
     if (this.game.inputMap["w"] || this.game.inputMap["W"]) {
-      this.config.state.velocity.scaleInPlace(1.01)
+      this.disableGravity = false
+      const forwardVector = new B.Vector3(0, 0, 1)
+      const rotationMatrix = B.Matrix.RotationYawPitchRoll(
+        this.rotation.y,
+        this.rotation.x,
+        this.rotation.z
+      )
+      const velocity = 0.005
+      const transformedDirection = B.Vector3.TransformNormal(
+        forwardVector,
+        rotationMatrix
+      )
+
+      this.config.state.velocity.addInPlace(transformedDirection.scale(velocity))
       console.log("fast")
     }
     if (this.game.inputMap["s"] || this.game.inputMap["S"]) {
       this.config.state.velocity.scaleInPlace(0.99)
       console.log("slow")
+    }
+    const rotationSpeed = 0.01
+
+    if (this.game.inputMap["a"] || this.game.inputMap["A"]) {
+      console.log("Strafe left")
+      this.rotation.y -= rotationSpeed
+    }
+    if (this.game.inputMap["d"] || this.game.inputMap["D"]) {
+      console.log("Strafe right")
+      this.rotation.y += rotationSpeed
     }
   }
 
