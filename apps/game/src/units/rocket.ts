@@ -33,6 +33,7 @@ export class Rocket extends Unit {
   config: RocketConfig
   gravityForce: number
   orbit: Orbit
+  disableGravity: boolean
 
   constructor({ game, config }: { game: Game; config: RocketConfig }) {
     super({ game })
@@ -56,6 +57,7 @@ export class Rocket extends Unit {
     material.specularPower = 100
     this.model.material = material
     this.orbit = new Orbit({ game, points: [this.position] })
+    this.disableGravity = false
   }
 
   onKeydown() {
@@ -70,16 +72,19 @@ export class Rocket extends Unit {
   }
 
   gravitateToPlanet(planet: Planet) {
-    const distanceToPlanet = B.Vector3.Distance(planet.position, this.position) / scale // 50km
-    this.gravityForce = calculateGravityForce(
-      this.config.mass,
-      planet.config.mass,
-      distanceToPlanet
-    )
+    if (!this.disableGravity) {
+      // Check if gravity is disabled
+      const distanceToPlanet = B.Vector3.Distance(planet.position, this.position) / scale // 50km
+      this.gravityForce = calculateGravityForce(
+        this.config.mass,
+        planet.config.mass,
+        distanceToPlanet
+      )
 
-    const gravityDirection = planet.position.subtract(this.position).normalize()
-    const forceVector = gravityDirection.scale(this.gravityForce * scale)
-    this.config.state.velocity.addInPlace(forceVector)
+      const gravityDirection = planet.position.subtract(this.position).normalize()
+      const forceVector = gravityDirection.scale(this.gravityForce * scale)
+      this.config.state.velocity.addInPlace(forceVector)
+    }
   }
 
   move() {

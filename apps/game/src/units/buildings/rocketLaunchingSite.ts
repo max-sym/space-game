@@ -46,7 +46,10 @@ export class RocketLaunchingSite extends Building<RocketLaunchingSiteConfig> {
       game,
     })
     this.game.units.push(rocket)
+
+    rocket.disableGravity = true
   }
+
   update() {
     // Call the update method of the parent class (Building)
     super.update()
