@@ -201,21 +201,21 @@ export const data: GameConfig = {
     },
   ],
   rockets: [
-    {
-      id: 1,
-      name: "Rocket 1",
-      color: "#550000",
-      state: {
-        velocity: new B.Vector3(0, 56400 * scale, 0),
-      },
-      dimentions: {
-        height: 0.3 * 5,
-        length: 1 * 5,
-        width: 0.3 * 5,
-      },
-      mass: 1,
-      position: new B.Vector3(700, 0, -80),
-      rotation: new B.Vector3(0, 90, 0),
-    },
+    // {
+    //   id: 1,
+    //   name: "Rocket 1",
+    //   color: "#550000",
+    //   state: {
+    //     velocity: new B.Vector3(0, 56400 * scale, 0),
+    //   },
+    //   dimentions: {
+    //     height: 0.3 * 5,
+    //     length: 1 * 5,
+    //     width: 0.3 * 5,
+    //   },
+    //   mass: 1,
+    //   position: new B.Vector3(700, 0, -80),
+    //   rotation: new B.Vector3(0, 90, 0),
+    // },
   ],
 }
