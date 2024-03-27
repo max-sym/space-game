@@ -4,7 +4,7 @@ import { Game } from "."
 
 export class Grid extends Unit {
   constructor({ game }: { game: Game }) {
-    super({ game })
+    super({ game, type: "grid" })
     // Parameters
     var gridSize = 3000 // Size of the grid
     var gridLines = 30 // Number of lines in the grid

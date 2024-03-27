@@ -11,7 +11,6 @@ import { Planet } from "./planet"
 export class Continent extends Unit {
   config: ContinentConfig // Configuration of the continent
   planet: Planet
-  type = "continent" // Type of the unit
 
   /**
    * Constructs a new Continent object.
@@ -20,7 +19,7 @@ export class Continent extends Unit {
    */
   constructor({ game, config }: { game: Game; config: ContinentConfig }) {
     // Call the constructor of the parent class (Unit)
-    super({ game })
+    super({ game, type: "continent" })
 
     this.config = config
 

@@ -8,7 +8,7 @@ export class Planet extends Unit {
   type = "planet"
 
   constructor({ game, config }: { game: Game; config: PlanetConfig }) {
-    super({ game })
+    super({ game, type: "planet" })
     this.config = config
     this.position = this.config.position.clone()
 

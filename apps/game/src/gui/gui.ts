@@ -4,6 +4,7 @@ import { PowerStation } from "~/units/buildings/power-station"
 import { Mine } from "~/units/buildings/mine"
 import { BuildingConfig } from "~/data"
 import { Player } from "~/player"
+import { Rocket } from "~/units/rocket"
 
 export type CursorMode = "select" | "power-plant" | "mine"
 
@@ -20,6 +21,7 @@ export class GameGUI {
   header: GUI.TextBlock | null = null
   player: Player
   elements: GUI.Control[] = []
+  selectedRocket: Rocket | null = null
 
   constructor({ game }: { game: Game }) {
     this.game = game
@@ -48,6 +50,49 @@ export class GameGUI {
     this.setCursorMode("select")
   }
 
+  createBuildings(pickedPoint: B.Vector3) {
+    const game = this.game
+    const continent = this.game.units.find((c) => c.type === "continent")
+
+    if (!continent?.model) return
+
+    const worldMatrix = continent.model.getWorldMatrix()
+    const invertWorldMatrix = worldMatrix.invert()
+    const localPoint = B.Vector3.TransformCoordinates(pickedPoint, invertWorldMatrix)
+    localPoint.z -= continent.config.depth / 2
+
+    if (localPoint.z < 0) return
+
+    const config: Omit<BuildingConfig, "name" | "type"> = {
+      id: this.game.units.length,
+      continentId: continent.config.id,
+      playerId: game.players[0].config.id,
+      position: new B.Vector2(localPoint.x, localPoint.y),
+    }
+
+    if (this.cursorMode === "power-plant") {
+      const newBuilding = new PowerStation({
+        game: this.game,
+        config: { ...config, name: "Power Plant", type: "power-station" },
+      })
+      this.game.units.push(newBuilding)
+    } else if (this.cursorMode === "mine") {
+      const newBuilding = new Mine({
+        game: this.game,
+        config: { ...config, name: "Mine", type: "mine" },
+      })
+      this.game.units.push(newBuilding)
+    }
+  }
+
+  selectRockets(pickedPoint: B.Vector3, pickResult: B.PickingInfo) {
+    const rocket = this.game.units.find(
+      (u) => u.type === "rocket" && u.model === pickResult.pickedMesh
+    ) as Rocket | undefined
+
+    rocket?.select()
+  }
+
   updateHeader() {
     if (this.header) {
       const resources = this.player.state.resources
@@ -64,43 +109,18 @@ export class GameGUI {
   registerEvents = () => {
     const game = this.game
     window.addEventListener("click", (_evt) => {
-      var pickResult = game.scene.pick(game.scene.pointerX, game.scene.pointerY)
+      const pickResult = game.scene.pick(game.scene.pointerX, game.scene.pointerY)
+
+      this.game.units.forEach((unit) => {
+        unit.deselect()
+      })
 
       if (pickResult.hit) {
         const pickedPoint = pickResult.pickedPoint
 
         if (pickedPoint) {
-          const continent = game.units.find((c) => c.type === "continent")
-
-          if (!continent?.model) return
-
-          var worldMatrix = continent.model.getWorldMatrix()
-          var invertWorldMatrix = worldMatrix.invert()
-          var localPoint = B.Vector3.TransformCoordinates(pickedPoint, invertWorldMatrix)
-          localPoint.z -= continent.config.depth / 2
-
-          if (localPoint.z < 0) return
-
-          const config: BuildingConfig = {
-            id: game.units.length,
-            continentId: continent.config.id,
-            playerId: game.players[0].config.id,
-            position: new B.Vector2(localPoint.x, localPoint.y),
-          }
-
-          if (this.cursorMode === "power-plant") {
-            const newBuilding = new PowerStation({
-              game: this.game,
-              config: { ...config, name: "Power Plant", type: "power-station" },
-            })
-            this.game.units.push(newBuilding)
-          } else if (this.cursorMode === "mine") {
-            const newBuilding = new Mine({
-              game: this.game,
-              config: { ...config, name: "Mine", type: "mine" },
-            })
-            this.game.units.push(newBuilding)
-          }
+          this.createBuildings(pickedPoint)
+          this.selectRockets(pickedPoint, pickResult)
         }
       }
     })

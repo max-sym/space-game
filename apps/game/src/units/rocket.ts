@@ -36,7 +36,7 @@ export class Rocket extends Unit {
   disableGravity: boolean
 
   constructor({ game, config }: { game: Game; config: RocketConfig }) {
-    super({ game })
+    super({ game, type: "rocket" })
     this.config = config
     this.position = this.config.position.clone()
     this.rotation = this.config.rotation.clone()

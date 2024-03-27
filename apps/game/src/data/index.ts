@@ -4,7 +4,7 @@ import { Mine } from "../units/buildings/mine"
 import { BuildingType } from "./buildings"
 import { RocketLaunchingSite } from "../units/buildings/rocketLaunchingSite"
 
-export type UnitType = "building" | "continent" | "planet"
+export type UnitType = "building" | "continent" | "planet" | "rocket"
 
 export const buildingClasses: Record<BuildingType, any> = {
   "power-station": PowerStation,
