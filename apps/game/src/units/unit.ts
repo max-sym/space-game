@@ -27,6 +27,7 @@ export class Unit {
     this.selectedMesh.material = material
     this.game.scene.addMesh(this.selectedMesh)
   }
+
   deselect() {
     this.selectedMesh?.dispose()
     this.selectedMesh = null
