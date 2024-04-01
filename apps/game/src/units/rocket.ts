@@ -29,17 +29,27 @@ export class Orbit extends Unit {
   }
 }
 
-type ProgramType = {
+type InstructionType = {
   time: number
   duration: number
-  accelaration: number
+  acceleration: number
   turn: number
+  executed?: boolean
 }
 
 export class Program {
-  program: ProgramType[] = []
+  instructions: InstructionType[] = []
 
-  constructor({ game, rocket }: { game: Game; rocket: Rocket }) {}
+  constructor({ game, rocket }: { game: Game; rocket: Rocket }) {
+    const programSet: InstructionType[] = [
+      { time: 0, duration: 5, acceleration: 10, turn: 0 },
+      { time: 60, duration: 3, acceleration: 0, turn: 45 },
+      { time: 120, duration: 4, acceleration: 5, turn: -30 },
+    ]
+
+    this.instructions = programSet
+    console.log(this.instructions)
+  }
 }
 
 export class Rocket extends Unit {
@@ -153,6 +163,23 @@ export class Rocket extends Unit {
 
     if (this.game.frame % 30 === 0) {
       this.orbit.addPoint(this.position)
+    }
+    const currentTimeSeconds = this.game.frame / 30
+
+    // Iterate over program instructions
+    for (const instruction of this.program.instructions) {
+      // Check if the current time exceeds the instruction time and it hasn't been executed yet
+      if (currentTimeSeconds >= instruction.time && !instruction.executed) {
+        // Perform action
+        console.log(`Perform action at ${currentTimeSeconds} seconds.`)
+        console.log("Acceleration: ", instruction.acceleration)
+        console.log("Turn: ", instruction.turn)
+
+        // Log forward vector calculation without applying it
+
+        // Mark instruction as executed
+        instruction.executed = true
+      }
     }
   }
 }
