@@ -29,17 +29,33 @@ export class Orbit extends Unit {
   }
 }
 
+type ProgramType = {
+  time: number
+  duration: number
+  accelaration: number
+  turn: number
+}
+
+export class Program {
+  program: ProgramType[] = []
+
+  constructor({ game, rocket }: { game: Game; rocket: Rocket }) {}
+}
+
 export class Rocket extends Unit {
   config: RocketConfig
   gravityForce: number
   orbit: Orbit
   disableGravity: boolean
+  program: Program
 
   constructor({ game, config }: { game: Game; config: RocketConfig }) {
     super({ game, type: "rocket" })
     this.config = config
     this.position = this.config.position.clone()
     this.rotation = this.config.rotation.clone()
+
+    this.program = new Program({ game, rocket: this })
 
     this.model = B.CreateBox(
       this.config.name,
