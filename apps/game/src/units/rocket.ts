@@ -49,9 +49,9 @@ export class Program {
   constructor({ game, rocket }: { game: Game; rocket: Rocket }) {
     this.instructions = [
       { time: 10, duration: 3, acceleration: 0, turn: TurnDirection.LEFT },
-      { time: 30, duration: 4, acceleration: 0.5, turn: TurnDirection.RIGHT },
-      { time: 40, duration: 7, acceleration: 0.2, turn: TurnDirection.LEFT },
-      { time: 50, duration: 7, acceleration: 0.2, turn: TurnDirection.LEFT },
+      { time: 30, duration: 4, acceleration: 0.2, turn: TurnDirection.RIGHT },
+      { time: 40, duration: 100, acceleration: 0.01, turn: TurnDirection.LEFT },
+      { time: 50, duration: 7, acceleration: 0.01, turn: TurnDirection.LEFT },
     ]
 
     console.log(this.instructions)
@@ -122,7 +122,7 @@ export class Rocket extends Unit {
       this.config.state.velocity.scaleInPlace(0.99)
       console.log("slow")
     }
-    const rotationSpeed = 0.01
+    const rotationSpeed = 1.0
 
     if (this.game.inputMap["a"] || this.game.inputMap["A"]) {
       console.log("Strafe left")
@@ -176,19 +176,18 @@ export class Rocket extends Unit {
     if (this.game.frame % 30 === 0) {
       this.orbit.addPoint(this.position)
     }
-    const currentTimeSeconds = this.game.frame / 30
+    const fps = this.game.engine.getFps()
+    console.log("Current FPS:", fps)
 
-    // Iterate over program instructions
+    const currentTimeSeconds = this.game.frame / fps
+
     for (const instruction of this.program.instructions) {
-      // Check if the current time exceeds the instruction time and it hasn't been executed yet
       if (currentTimeSeconds >= instruction.time && !instruction.executed) {
-        // Perform action
         console.log(`Perform action at ${currentTimeSeconds} seconds.`)
         console.log("Acceleration: ", instruction.acceleration)
         console.log("Turn: ", instruction.turn)
         const rotationSpeed = 0.02
 
-        // Acceleration
         const forwardVector = new B.Vector3(0, 0, 1)
         const rotationMatrix = B.Matrix.RotationYawPitchRoll(
           this.rotation.y,
@@ -204,7 +203,6 @@ export class Rocket extends Unit {
           transformedDirection.scale(instruction.acceleration)
         )
 
-        // Turning
         switch (instruction.turn) {
           case TurnDirection.LEFT:
             console.log("Turn left")
@@ -215,20 +213,17 @@ export class Rocket extends Unit {
             this.rotation.y += rotationSpeed
             break
           case TurnDirection.NONE:
-            // Do nothing
             break
           default:
             console.error("Invalid turn direction")
             break
         }
 
-        // Mark instruction as executed
         instruction.executed = true
 
-        // Schedule resetting executed state after duration
         setTimeout(() => {
           instruction.executed = false
-        }, instruction.duration * 1000) // Convert seconds to milliseconds
+        }, instruction.duration * 1000)
       }
     }
   }
