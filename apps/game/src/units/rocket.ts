@@ -53,18 +53,23 @@ export class Program {
     this.rocket = rocket
 
     this.instructions = [
-      { time: 10, duration: 3, acceleration: 10, turn: TurnDirection.LEFT },
-      { time: 30, duration: 4, acceleration: 20, turn: TurnDirection.RIGHT },
-      { time: 40, duration: 100, acceleration: 0.01, turn: TurnDirection.LEFT },
-      { time: 50, duration: 7, acceleration: 0.01, turn: TurnDirection.LEFT },
+      { time: 10, duration: 5, acceleration: 0, turn: TurnDirection.LEFT },
+      { time: 30, duration: 5, acceleration: 0.05, turn: TurnDirection.RIGHT },
+      { time: 35, duration: 2, acceleration: 0, turn: TurnDirection.NONE },
     ]
 
     console.log(this.instructions)
   }
-
   executeInstructions() {
     const fps = this.game.engine.getFps()
     const currentTimeSeconds = this.game.frame / fps
+
+    // Apply gravitational effects before executing instructions
+    for (const planet of this.game.units) {
+      if (planet.type === "planet") {
+        this.rocket.gravitateToPlanet(planet)
+      }
+    }
 
     for (const instruction of this.instructions) {
       if (currentTimeSeconds >= instruction.time && !instruction.executed) {
@@ -72,7 +77,7 @@ export class Program {
         console.log("Acceleration: ", instruction.acceleration)
         console.log("Turn: ", instruction.turn)
 
-        const rotationSpeed = 0.002
+        const rotationSpeed = 0.02
 
         const forwardVector = new B.Vector3(0, 0, 1)
         const rotationMatrix = B.Matrix.RotationYawPitchRoll(
@@ -85,10 +90,12 @@ export class Program {
           rotationMatrix
         )
 
+        // Apply acceleration
         this.rocket.config.state.velocity.addInPlace(
           transformedDirection.scale(instruction.acceleration)
         )
 
+        // Apply rotation
         switch (instruction.turn) {
           case TurnDirection.LEFT:
             console.log("Turn left")
@@ -117,16 +124,15 @@ export class Rocket extends Unit {
   orbit: Orbit
   disableGravity: boolean
   program: Program
-  rotationSpeed: number // Single rotation speed variable
 
   constructor({ game, config }: { game: Game; config: RocketConfig }) {
     super({ game, type: "rocket" })
     this.config = config
     this.position = this.config.position.clone()
     this.rotation = this.config.rotation.clone()
-    this.rotationSpeed = 0.02
 
     this.program = new Program(game, this)
+
     this.model = B.CreateBox(
       this.config.name,
       {
@@ -143,7 +149,7 @@ export class Rocket extends Unit {
     material.specularPower = 100
     this.model.material = material
     this.orbit = new Orbit({ game, points: [this.position] })
-    this.disableGravity = false
+    // this.disableGravity = false
   }
 
   onKeydown() {
@@ -157,7 +163,7 @@ export class Rocket extends Unit {
         this.rotation.x,
         this.rotation.z
       )
-      const velocity = 0.1
+      const velocity = 0.01
       const transformedDirection = B.Vector3.TransformNormal(
         forwardVector,
         rotationMatrix
@@ -170,20 +176,22 @@ export class Rocket extends Unit {
       this.config.state.velocity.scaleInPlace(0.99)
       console.log("slow")
     }
+    const rotationSpeed = 0.02
 
     if (this.game.inputMap["a"] || this.game.inputMap["A"]) {
       console.log("Strafe left")
-      this.rotation.y -= this.rotationSpeed
+      this.rotation.y -= rotationSpeed
     }
     if (this.game.inputMap["d"] || this.game.inputMap["D"]) {
       console.log("Strafe right")
-      this.rotation.y += this.rotationSpeed
+      this.rotation.y += rotationSpeed
     }
   }
 
   gravitateToPlanet(planet: Planet) {
     if (!this.disableGravity) {
-      const distanceToPlanet = B.Vector3.Distance(planet.position, this.position) / scale
+      // Check if gravity is disabled
+      const distanceToPlanet = B.Vector3.Distance(planet.position, this.position) / scale // 50km
       this.gravityForce = calculateGravityForce(
         this.config.mass,
         planet.config.mass,
@@ -211,10 +219,13 @@ export class Rocket extends Unit {
   }
 
   update() {
-    super.update()
-    this.gravitateToPlanets()
-    this.move()
-    this.program.executeInstructions()
+    for (let i = 0; i < 50; i++) {
+      super.update()
+      this.gravitateToPlanets()
+      this.move()
+      this.program.executeInstructions()
+    }
+
     this.onKeydown()
 
     if (this.game.frame % 30 === 0) {
