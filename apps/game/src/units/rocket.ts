@@ -47,13 +47,20 @@ export class Program {
   instructions: InstructionType[] = []
 
   constructor({ game, rocket }: { game: Game; rocket: Rocket }) {
-    const programSet: InstructionType[] = [
+    this.instructions = [
       { time: 10, duration: 3, acceleration: 0, turn: TurnDirection.LEFT },
       { time: 30, duration: 4, acceleration: 0.5, turn: TurnDirection.RIGHT },
+      { time: 40, duration: 7, acceleration: 0.2, turn: TurnDirection.LEFT },
+      { time: 50, duration: 7, acceleration: 0.2, turn: TurnDirection.LEFT },
     ]
 
-    this.instructions = programSet
     console.log(this.instructions)
+  }
+
+  getCurrentInstruction(currentTimeSeconds: number): InstructionType | undefined {
+    return this.instructions.find(
+      (instruction) => currentTimeSeconds >= instruction.time && !instruction.executed
+    )
   }
 }
 
