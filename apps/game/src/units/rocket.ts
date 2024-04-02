@@ -29,11 +29,17 @@ export class Orbit extends Unit {
   }
 }
 
+export enum TurnDirection {
+  NONE,
+  LEFT,
+  RIGHT,
+}
+
 type InstructionType = {
   time: number
   duration: number
   acceleration: number
-  turn: number
+  turn: TurnDirection
   executed?: boolean
 }
 
@@ -42,9 +48,8 @@ export class Program {
 
   constructor({ game, rocket }: { game: Game; rocket: Rocket }) {
     const programSet: InstructionType[] = [
-      { time: 0, duration: 5, acceleration: 10, turn: 0 },
-      { time: 60, duration: 3, acceleration: 0, turn: 45 },
-      { time: 120, duration: 4, acceleration: 5, turn: -30 },
+      { time: 10, duration: 3, acceleration: 0, turn: TurnDirection.LEFT },
+      { time: 30, duration: 4, acceleration: 0.5, turn: TurnDirection.RIGHT },
     ]
 
     this.instructions = programSet
@@ -174,11 +179,49 @@ export class Rocket extends Unit {
         console.log(`Perform action at ${currentTimeSeconds} seconds.`)
         console.log("Acceleration: ", instruction.acceleration)
         console.log("Turn: ", instruction.turn)
+        const rotationSpeed = 0.02
 
-        // Log forward vector calculation without applying it
+        // Acceleration
+        const forwardVector = new B.Vector3(0, 0, 1)
+        const rotationMatrix = B.Matrix.RotationYawPitchRoll(
+          this.rotation.y,
+          this.rotation.x,
+          this.rotation.z
+        )
+        const transformedDirection = B.Vector3.TransformNormal(
+          forwardVector,
+          rotationMatrix
+        )
+
+        this.config.state.velocity.addInPlace(
+          transformedDirection.scale(instruction.acceleration)
+        )
+
+        // Turning
+        switch (instruction.turn) {
+          case TurnDirection.LEFT:
+            console.log("Turn left")
+            this.rotation.y -= rotationSpeed
+            break
+          case TurnDirection.RIGHT:
+            console.log("Turn right")
+            this.rotation.y += rotationSpeed
+            break
+          case TurnDirection.NONE:
+            // Do nothing
+            break
+          default:
+            console.error("Invalid turn direction")
+            break
+        }
 
         // Mark instruction as executed
         instruction.executed = true
+
+        // Schedule resetting executed state after duration
+        setTimeout(() => {
+          instruction.executed = false
+        }, instruction.duration * 1000) // Convert seconds to milliseconds
       }
     }
   }
