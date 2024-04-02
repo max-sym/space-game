@@ -35,7 +35,7 @@ export enum TurnDirection {
   RIGHT,
 }
 
-type InstructionType = {
+export type InstructionType = {
   time: number
   duration: number
   acceleration: number
@@ -45,11 +45,16 @@ type InstructionType = {
 
 export class Program {
   instructions: InstructionType[] = []
+  game: Game
+  rocket: Rocket
 
-  constructor({ game, rocket }: { game: Game; rocket: Rocket }) {
+  constructor(game: Game, rocket: Rocket) {
+    this.game = game
+    this.rocket = rocket
+
     this.instructions = [
-      { time: 10, duration: 3, acceleration: 0, turn: TurnDirection.LEFT },
-      { time: 30, duration: 4, acceleration: 0.2, turn: TurnDirection.RIGHT },
+      { time: 10, duration: 3, acceleration: 10, turn: TurnDirection.LEFT },
+      { time: 30, duration: 4, acceleration: 20, turn: TurnDirection.RIGHT },
       { time: 40, duration: 100, acceleration: 0.01, turn: TurnDirection.LEFT },
       { time: 50, duration: 7, acceleration: 0.01, turn: TurnDirection.LEFT },
     ]
@@ -57,10 +62,52 @@ export class Program {
     console.log(this.instructions)
   }
 
-  getCurrentInstruction(currentTimeSeconds: number): InstructionType | undefined {
-    return this.instructions.find(
-      (instruction) => currentTimeSeconds >= instruction.time && !instruction.executed
-    )
+  executeInstructions() {
+    const fps = this.game.engine.getFps()
+    const currentTimeSeconds = this.game.frame / fps
+
+    for (const instruction of this.instructions) {
+      if (currentTimeSeconds >= instruction.time && !instruction.executed) {
+        console.log(`Perform action at ${currentTimeSeconds} seconds.`)
+        console.log("Acceleration: ", instruction.acceleration)
+        console.log("Turn: ", instruction.turn)
+
+        const rotationSpeed = 0.002
+
+        const forwardVector = new B.Vector3(0, 0, 1)
+        const rotationMatrix = B.Matrix.RotationYawPitchRoll(
+          this.rocket.rotation.y,
+          this.rocket.rotation.x,
+          this.rocket.rotation.z
+        )
+        const transformedDirection = B.Vector3.TransformNormal(
+          forwardVector,
+          rotationMatrix
+        )
+
+        this.rocket.config.state.velocity.addInPlace(
+          transformedDirection.scale(instruction.acceleration)
+        )
+
+        switch (instruction.turn) {
+          case TurnDirection.LEFT:
+            console.log("Turn left")
+            this.rocket.rotation.y -= rotationSpeed
+            break
+          case TurnDirection.RIGHT:
+            console.log("Turn right")
+            this.rocket.rotation.y += rotationSpeed
+            break
+          case TurnDirection.NONE:
+            break
+          default:
+            console.error("Invalid turn direction")
+            break
+        }
+
+        instruction.executed = true
+      }
+    }
   }
 }
 
@@ -70,15 +117,16 @@ export class Rocket extends Unit {
   orbit: Orbit
   disableGravity: boolean
   program: Program
+  rotationSpeed: number // Single rotation speed variable
 
   constructor({ game, config }: { game: Game; config: RocketConfig }) {
     super({ game, type: "rocket" })
     this.config = config
     this.position = this.config.position.clone()
     this.rotation = this.config.rotation.clone()
+    this.rotationSpeed = 0.02
 
-    this.program = new Program({ game, rocket: this })
-
+    this.program = new Program(game, this)
     this.model = B.CreateBox(
       this.config.name,
       {
@@ -109,7 +157,7 @@ export class Rocket extends Unit {
         this.rotation.x,
         this.rotation.z
       )
-      const velocity = 0.005
+      const velocity = 0.1
       const transformedDirection = B.Vector3.TransformNormal(
         forwardVector,
         rotationMatrix
@@ -122,22 +170,20 @@ export class Rocket extends Unit {
       this.config.state.velocity.scaleInPlace(0.99)
       console.log("slow")
     }
-    const rotationSpeed = 1.0
 
     if (this.game.inputMap["a"] || this.game.inputMap["A"]) {
       console.log("Strafe left")
-      this.rotation.y -= rotationSpeed
+      this.rotation.y -= this.rotationSpeed
     }
     if (this.game.inputMap["d"] || this.game.inputMap["D"]) {
       console.log("Strafe right")
-      this.rotation.y += rotationSpeed
+      this.rotation.y += this.rotationSpeed
     }
   }
 
   gravitateToPlanet(planet: Planet) {
     if (!this.disableGravity) {
-      // Check if gravity is disabled
-      const distanceToPlanet = B.Vector3.Distance(planet.position, this.position) / scale // 50km
+      const distanceToPlanet = B.Vector3.Distance(planet.position, this.position) / scale
       this.gravityForce = calculateGravityForce(
         this.config.mass,
         planet.config.mass,
@@ -165,66 +211,14 @@ export class Rocket extends Unit {
   }
 
   update() {
-    for (let i = 0; i < 50; i++) {
-      super.update()
-      this.gravitateToPlanets()
-      this.move()
-    }
-
+    super.update()
+    this.gravitateToPlanets()
+    this.move()
+    this.program.executeInstructions()
     this.onKeydown()
 
     if (this.game.frame % 30 === 0) {
       this.orbit.addPoint(this.position)
-    }
-    const fps = this.game.engine.getFps()
-    console.log("Current FPS:", fps)
-
-    const currentTimeSeconds = this.game.frame / fps
-
-    for (const instruction of this.program.instructions) {
-      if (currentTimeSeconds >= instruction.time && !instruction.executed) {
-        console.log(`Perform action at ${currentTimeSeconds} seconds.`)
-        console.log("Acceleration: ", instruction.acceleration)
-        console.log("Turn: ", instruction.turn)
-        const rotationSpeed = 0.02
-
-        const forwardVector = new B.Vector3(0, 0, 1)
-        const rotationMatrix = B.Matrix.RotationYawPitchRoll(
-          this.rotation.y,
-          this.rotation.x,
-          this.rotation.z
-        )
-        const transformedDirection = B.Vector3.TransformNormal(
-          forwardVector,
-          rotationMatrix
-        )
-
-        this.config.state.velocity.addInPlace(
-          transformedDirection.scale(instruction.acceleration)
-        )
-
-        switch (instruction.turn) {
-          case TurnDirection.LEFT:
-            console.log("Turn left")
-            this.rotation.y -= rotationSpeed
-            break
-          case TurnDirection.RIGHT:
-            console.log("Turn right")
-            this.rotation.y += rotationSpeed
-            break
-          case TurnDirection.NONE:
-            break
-          default:
-            console.error("Invalid turn direction")
-            break
-        }
-
-        instruction.executed = true
-
-        setTimeout(() => {
-          instruction.executed = false
-        }, instruction.duration * 1000)
-      }
     }
   }
 }
