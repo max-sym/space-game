@@ -53,7 +53,7 @@ export class Program {
     this.rocket = rocket
 
     this.instructions = [
-      { time: 0, duration: 10, acceleration: 0, turn: TurnDirection.LEFT },
+      { time: 0, duration: 5, acceleration: 0.09, turn: TurnDirection.RIGHT },
       { time: 30, duration: 5, acceleration: 0.5, turn: TurnDirection.RIGHT },
       { time: 35, duration: 2, acceleration: 0, turn: TurnDirection.NONE },
     ]
@@ -62,79 +62,61 @@ export class Program {
   }
   executeInstructions() {
     const fps = this.game.engine.getFps()
-    const currentTimeSeconds = this.game.frame / fps
-    let isAccelerating = false
-
-    // Set disableGravity to false when the rocket starts moving
-    // if (this.instructions.length > 0 && currentTimeSeconds >= this.instructions[0].time) {
-    //   this.rocket.disableGravity = false
-    // }
-
-    // // Apply gravitational effects before executing instructions
-    // for (const planet of this.game.units) {
-    //   if (planet.type === "planet" && isAccelerating) {
-    //     this.rocket.gravitateToPlanet(planet)
-    //   }
-    // }
+    const currentFrame = this.game.frame
 
     for (const instruction of this.instructions) {
-      if (currentTimeSeconds >= instruction.time && !instruction.executed) {
-        console.log(`Perform action at ${currentTimeSeconds} seconds.`)
+      if (currentFrame >= instruction.time * fps && !instruction.executed) {
+        console.log(`Perform action at frame ${currentFrame}.`)
         console.log("Acceleration: ", instruction.acceleration)
         console.log("Turn: ", instruction.turn)
 
         const rotationSpeed = 0.02
         let elapsedTime = 0
+        const startTime = this.game.time
 
         // Apply acceleration for the specified duration
         const accelerationInterval = setInterval(() => {
-          elapsedTime += 1 / fps
-          if (elapsedTime >= instruction.duration) {
-            clearInterval(accelerationInterval)
-            isAccelerating = false
-          } else {
-            isAccelerating = true
-          }
+          const now = this.game.time
+          elapsedTime = now - startTime
 
-          // Apply acceleration
-          const forwardVector = new B.Vector3(0, 0, 1)
-          const rotationMatrix = B.Matrix.RotationYawPitchRoll(
-            this.rocket.rotation.y,
-            this.rocket.rotation.x,
-            this.rocket.rotation.z
-          )
-          const transformedDirection = B.Vector3.TransformNormal(
-            forwardVector,
-            rotationMatrix
-          )
-          this.rocket.config.state.velocity.addInPlace(
-            transformedDirection.scale(instruction.acceleration)
-          )
+          if (elapsedTime >= instruction.duration * 1000) {
+            clearInterval(accelerationInterval)
+            this.rocket.config.state.velocity = new B.Vector3(0, 0, 0) // Stop acceleration
+          } else {
+            // Apply acceleration
+            const forwardVector = new B.Vector3(0, 0, 1)
+            const rotationMatrix = B.Matrix.RotationYawPitchRoll(
+              this.rocket.rotation.y,
+              this.rocket.rotation.x,
+              this.rocket.rotation.z
+            )
+            const transformedDirection = B.Vector3.TransformNormal(
+              forwardVector,
+              rotationMatrix
+            )
+            this.rocket.config.state.velocity.addInPlace(
+              transformedDirection.scale(instruction.acceleration)
+            )
+
+            // Enable gravity only when accelerating
+            this.rocket.disableGravity = false
+          }
         }, 1000 / fps)
 
         // Apply rotation for the specified duration
-        const rotationInterval = setInterval(() => {
-          switch (instruction.turn) {
-            case TurnDirection.LEFT:
-              console.log("Turn left")
-              this.rocket.rotation.y -= rotationSpeed
-              break
-            case TurnDirection.RIGHT:
-              console.log("Turn right")
-              this.rocket.rotation.y += rotationSpeed
-              break
-            case TurnDirection.NONE:
-              break
-            default:
-              console.error("Invalid turn direction")
-              break
-          }
+        if (instruction.turn === TurnDirection.LEFT) {
+          setTimeout(() => {
+            clearInterval(accelerationInterval)
+          }, instruction.duration * 1000)
 
-          elapsedTime += 1 / fps
-          if (elapsedTime >= instruction.duration) {
+          const rotationInterval = setInterval(() => {
+            this.rocket.rotation.y -= rotationSpeed
+          }, 1000 / fps)
+
+          setTimeout(() => {
             clearInterval(rotationInterval)
-          }
-        }, 1000 / fps)
+          }, instruction.duration * 1000)
+        }
 
         instruction.executed = true
       }

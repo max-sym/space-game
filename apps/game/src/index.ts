@@ -19,6 +19,7 @@ export class Game {
   gui: GameGUI
   frame = 0
   delta = 0
+  time: number
 
   inputMap: Record<string, boolean> = {}
 
@@ -30,6 +31,7 @@ export class Game {
     this.init()
     this.gui = new GameGUI({ game: this })
     this.registerEvents()
+    this.time = Date.now() / 1000
   }
 
   registerEvents = () => {
