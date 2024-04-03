@@ -53,8 +53,8 @@ export class Program {
     this.rocket = rocket
 
     this.instructions = [
-      { time: 0, duration: 5, acceleration: 0.09, turn: TurnDirection.RIGHT },
-      { time: 30, duration: 5, acceleration: 0.5, turn: TurnDirection.RIGHT },
+      { time: 0, duration: 5, acceleration: 0.06, turn: TurnDirection.RIGHT },
+      { time: 10, duration: 5, acceleration: 0.09, turn: TurnDirection.LEFT },
       { time: 35, duration: 2, acceleration: 0, turn: TurnDirection.NONE },
     ]
 
@@ -82,6 +82,9 @@ export class Program {
           if (elapsedTime >= instruction.duration * 1000) {
             clearInterval(accelerationInterval)
             this.rocket.config.state.velocity = new B.Vector3(0, 0, 0) // Stop acceleration
+            if (instruction.acceleration === 0) {
+              this.rocket.disableGravity = false // Enable gravity if acceleration is zero
+            }
           } else {
             // Apply acceleration
             const forwardVector = new B.Vector3(0, 0, 1)
@@ -99,7 +102,9 @@ export class Program {
             )
 
             // Enable gravity only when accelerating
-            this.rocket.disableGravity = false
+            if (instruction.acceleration !== 0) {
+              this.rocket.disableGravity = false
+            }
           }
         }, 1000 / fps)
 
@@ -107,6 +112,9 @@ export class Program {
         if (instruction.turn === TurnDirection.LEFT) {
           setTimeout(() => {
             clearInterval(accelerationInterval)
+            if (instruction.acceleration === 0) {
+              this.rocket.disableGravity = false // Enable gravity if acceleration is zero
+            }
           }, instruction.duration * 1000)
 
           const rotationInterval = setInterval(() => {
