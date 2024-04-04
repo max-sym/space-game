@@ -53,9 +53,8 @@ export class Program {
     this.rocket = rocket
 
     this.instructions = [
-      { time: 0, duration: 1, acceleration: 0, turn: TurnDirection.LEFT },
-      { time: 2, duration: 1, acceleration: 0.01, turn: TurnDirection.RIGHT },
-      { time: 4, duration: 2, acceleration: 0.1, turn: TurnDirection.NONE },
+      { time: 0, duration: 2, acceleration: 0, turn: TurnDirection.LEFT },
+      { time: 500, duration: 1, acceleration: 0.01, turn: TurnDirection.RIGHT },
     ]
 
     console.log(this.instructions)
@@ -109,24 +108,24 @@ export class Program {
         }, fpsInterval)
 
         // Apply rotation for the specified duration
-        if (instruction.turn === TurnDirection.LEFT) {
-          setTimeout(
-            () => {
-              clearInterval(accelerationInterval)
-            },
-            instruction.duration * 1000 * fpsInterval
-          )
-
+        if (
+          instruction.turn === TurnDirection.LEFT ||
+          instruction.turn === TurnDirection.RIGHT
+        ) {
+          let rotationTime = 0 // Track elapsed rotation time
           const rotationInterval = setInterval(() => {
-            this.rocket.rotation.y -= rotationSpeed
-          }, fpsInterval)
+            if (instruction.turn === TurnDirection.LEFT) {
+              this.rocket.rotation.y -= rotationSpeed
+            } else if (instruction.turn === TurnDirection.RIGHT) {
+              this.rocket.rotation.y += rotationSpeed
+            }
+            rotationTime += fpsInterval / 1000 // Update elapsed rotation time
 
-          setTimeout(
-            () => {
+            // Check if duration is exceeded, then stop rotation
+            if (rotationTime >= instruction.duration) {
               clearInterval(rotationInterval)
-            },
-            instruction.duration * 1000 * fpsInterval
-          )
+            }
+          }, fpsInterval)
         }
 
         instruction.executed = true
