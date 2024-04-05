@@ -31,7 +31,7 @@ export class Game {
     this.init()
     this.gui = new GameGUI({ game: this })
     this.registerEvents()
-    this.time = Date.now() / 1000
+    this.time = Date.now()
   }
 
   registerEvents = () => {

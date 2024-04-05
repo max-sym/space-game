@@ -171,7 +171,7 @@ export const data: GameConfig = {
       playerId: 1,
       continentId: 1,
       name: "Rocket Launching Site",
-      position: new B.Vector2(4, 10),
+      position: new B.Vector2(0, 0),
       type: "rocket-launching-site",
     },
     {
@@ -179,7 +179,7 @@ export const data: GameConfig = {
       playerId: 2,
       continentId: 2,
       name: "Rocket Launching Site",
-      position: new B.Vector2(6, 10),
+      position: new B.Vector2(0, 0),
       type: "rocket-launching-site",
     },
   ],
