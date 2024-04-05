@@ -29,17 +29,11 @@ export class Orbit extends Unit {
   }
 }
 
-export enum TurnDirection {
-  NONE,
-  LEFT,
-  RIGHT,
-}
-
 export type InstructionType = {
   time: number
   duration: number
-  acceleration: number
-  turn: TurnDirection
+  acceleration: number | null
+  rotate: B.Vector3 | null
 }
 
 export class Program {
@@ -52,11 +46,14 @@ export class Program {
     this.rocket = rocket
 
     this.instructions = [
-      // { time: 0, duration: 2, acceleration: 0, turn: TurnDirection.LEFT },
-      // { time: 3, duration: 5, acceleration: 0, turn: TurnDirection.RIGHT },
-      { time: 3, duration: 1.5, acceleration: 0.005, turn: TurnDirection.NONE },
-      { time: 3, duration: 0.2, acceleration: 0, turn: TurnDirection.RIGHT },
-      // { time: 4, duration: 2, acceleration: 0, turn: TurnDirection.RIGHT },
+      { time: 1, duration: 1.3, acceleration: 0.006, rotate: null },
+      {
+        time: 1,
+        duration: 3.5,
+        acceleration: null,
+        rotate: new B.Vector3(0, 0.01, 0.0),
+      },
+      { time: 4, duration: 3, acceleration: 0.0002, rotate: null },
     ]
 
     console.log(this.instructions)
@@ -99,15 +96,23 @@ export class Program {
           }
         }
 
-        if (
-          instruction.turn === TurnDirection.LEFT ||
-          instruction.turn === TurnDirection.RIGHT
-        ) {
-          if (instruction.turn === TurnDirection.LEFT) {
-            this.rocket.rotation.y -= rotationSpeed
-          } else if (instruction.turn === TurnDirection.RIGHT) {
-            this.rocket.rotation.y += rotationSpeed
-          }
+        // To rotate the rocket along its local axis (not global)
+        if (instruction.rotate !== null) {
+          const currentRotationQuaternion = B.Quaternion.RotationYawPitchRoll(
+            this.rocket.rotation.y,
+            this.rocket.rotation.x,
+            this.rocket.rotation.z
+          )
+
+          const adding = B.Quaternion.RotationYawPitchRoll(
+            instruction.rotate.y,
+            instruction.rotate.x,
+            instruction.rotate.z
+          )
+
+          const combinedQuaternion = currentRotationQuaternion.multiply(adding)
+
+          this.rocket.rotation = combinedQuaternion.toEulerAngles()
         }
       }
     }
