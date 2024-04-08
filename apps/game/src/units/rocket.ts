@@ -46,14 +46,39 @@ export class Program {
     this.rocket = rocket
 
     this.instructions = [
-      { time: 1, duration: 1.3, acceleration: 0.006, rotate: null },
       {
         time: 1,
-        duration: 3.5,
-        acceleration: null,
-        rotate: new B.Vector3(0, 0.01, 0.0),
+        duration: 1.5,
+        acceleration: 0.007,
+        rotate: null,
       },
-      { time: 4, duration: 3, acceleration: 0.0002, rotate: null },
+      {
+        time: 1,
+        duration: 0.3,
+        acceleration: null,
+        rotate: new B.Vector3(0, -0.03, 0),
+      },
+      {
+        time: 3,
+        duration: 0.3,
+        acceleration: 0.02,
+        rotate: new B.Vector3(-0.01, -0.03, 0),
+      },
+      {
+        time: 5,
+        duration: 0.3,
+        acceleration: 0.05,
+        rotate: new B.Vector3(0, 0, 0),
+      },
+
+      // { time: 1, duration: 1.3, acceleration: 0.006, rotate: null },
+      // {
+      //   time: 1,
+      //   duration: 3.5,
+      //   acceleration: null,
+      //   rotate: new B.Vector3(0, 0.01, 0.0),
+      // },
+      // { time: 4, duration: 3, acceleration: 0.0002, rotate: null },
     ]
 
     console.log(this.instructions)
@@ -152,6 +177,31 @@ export class Rocket extends Unit {
     this.orbit = new Orbit({ game, points: [this.position] })
   }
 
+  checkCollisionsWithPlanets() {
+    for (const unit of this.game.units) {
+      if (unit.type === "planet") {
+        const planet = unit as Planet
+        const distance = B.Vector3.Distance(this.position, planet.position)
+        if (distance < (this.config.dimentions.length + planet.config.diameter) / 2) {
+          // Collision detected
+          this.config.state.velocity = B.Vector3.Zero()
+          console.log("Collision with planet: " + planet.config.name)
+          this.crash() // Call a method to handle crashing
+          break // No need to check further collisions if already collided
+        }
+      }
+    }
+  }
+
+  crash() {
+    // Add any logic to handle the rocket crashing
+    // For example, you can stop the rocket, mark it as crashed, etc.
+    this.disableGravity = true // Stop applying gravity
+    this.config.state.velocity = B.Vector3.Zero() // Stop the rocket
+    // Mark the rocket as crashed
+    console.log("Rocket crashed!")
+  }
+
   onKeydown() {
     if (!this.config.controlable) return
 
@@ -223,8 +273,8 @@ export class Rocket extends Unit {
       super.update()
       this.gravitateToPlanets()
       this.move()
+      this.checkCollisionsWithPlanets()
     }
-
     this.program.executeInstructions()
 
     this.onKeydown()
